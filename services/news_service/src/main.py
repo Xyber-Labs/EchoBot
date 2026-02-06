@@ -180,8 +180,9 @@ async def main(topic: str):
     )
 
     if successful_connections == 0:
-        logger.error("CRITICAL ERROR: No MCP servers could be initialized!")
-        sys.exit(1)
+        logger.warning(
+            "No MCP servers could be initialized. Continuing with LLM-only mode."
+        )
     else:
         logger.info(
             f"SUCCESS: Proceeding with {len(mcp_tools)} tools from {successful_connections} working servers"

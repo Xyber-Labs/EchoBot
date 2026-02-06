@@ -1,21 +1,69 @@
+x-debug-common: &debug-common
+  build:
+    context: .
+    dockerfile: ./Dockerfile
+    target: dev
+  env_file:
+    - .env
+  environment:
+    PYTHONPATH: /app
+    YOUTUBE_ENABLED: ${YOUTUBE_ENABLED:-false}
+    POLL_INTERVAL_SECONDS: ${POLL_INTERVAL_SECONDS:-30}
+  volumes:
+    - .:/app:rw
+  restart: unless-stopped
+
 services:
-  unified_container:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      target: dev
-    image: unified_container_debug
-    container_name: unified_container_debug
-    command: ["tail", "-f", "/dev/null"]
+  api:
+    <<: *debug-common
+    image: echobot-debug
+    container_name: echobot-api-debug
+    command: ["python", "-m", "services.api.src.main", "--host", "0.0.0.0", "--port", "8000", "--reload"]
     ports:
       - "8000:8000"
+
+  chat_youtube:
+    <<: *debug-common
+    image: echobot-debug
+    container_name: echobot-chat-youtube-debug
+    command: ["python", "-m", "services.chat_youtube_service.src.main", "--host", "0.0.0.0", "--port", "8001", "--reload"]
+    ports:
       - "8001:8001"
+    depends_on:
+      - api
+
+  event_notifier:
+    <<: *debug-common
+    image: echobot-debug
+    container_name: echobot-event-notifier-debug
+    command: ["python", "-m", "services.event_notifier_service.src.main", "--host", "0.0.0.0", "--port", "8002", "--reload"]
+    ports:
       - "8002:8002"
-      - "8003:8003"
-      - "8004:8004"
-    volumes:
-      - .:/app:rw
-    env_file:
-      - .env
-    restart: unless-stopped
-  
+
+  news:
+    <<: *debug-common
+    image: echobot-debug
+    container_name: echobot-news-debug
+    command: ["python", "services/news_service/src/main.py"]
+    depends_on:
+      - event_notifier
+
+  music:
+    <<: *debug-common
+    image: echobot-debug
+    container_name: echobot-music-debug
+    command: ["python", "services/music_service/src/main.py"]
+    depends_on:
+      - event_notifier
+
+  obs:
+    <<: *debug-common
+    image: echobot-debug
+    container_name: echobot-obs-debug
+    command: ["python", "services/obs_stream_service/src/main.py"]
+    depends_on:
+      - api
+      - chat_youtube
+      - music
+      - news
+      - event_notifier
