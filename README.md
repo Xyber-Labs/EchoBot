@@ -276,3 +276,8 @@ EchoBot uses a unified media structure to simplify content management. All media
 -   **OBS Connection Failed**: Ensure OBS is running and your WebSocket settings are correct.
 -   **Container Can't Write Files**: Check that the `{PROJECT_ROOT}/app/media` directory has the correct permissions.
 -   **Path Conversion Not Working**: Verify that `MEDIA_HOST_DIR` and `MEDIA_CONTAINER_DIR` are set correctly in your `.env` file.
+### Contribution Note for Issue #11
+Planning to implement Solana Pay for donations/tips during streams.
+- Generate QR codes/links for SOL wallet.
+- Display wallet in chat/overlay.
+SOL wallet address for testing/rewards: 41sv3t2fsy2eB9WZTCzSpiwwZEpzg8DnxU2jLG8s5fpQ
