@@ -27,7 +27,18 @@ class OBSService:
     def __init__(self, settings: OBSSettings) -> None:
         self._settings = settings or global_settings
         self._client_manager = OBSClientManager(settings)
-        self._client = self._client_manager.get_client()
+        self._enabled = self._client_manager.enabled
+        self._client = None
+        if self._enabled:
+            try:
+                self._client = self._client_manager.get_client()
+            except Exception as e:
+                logger.warning(
+                    "OBS connection is unavailable. Continuing in no-OBS mode: %s", e
+                )
+                self._enabled = False
+        else:
+            logger.warning("OBS is disabled by configuration. Running in no-OBS mode.")
         # TODO: do we really need it here?
         self._executor = ThreadPoolExecutor(max_workers=2)
 
@@ -107,6 +118,9 @@ class OBSService:
         )
 
     def switch_scene(self, scene_name: str) -> None:
+        if not self._enabled:
+            logger.debug("Skipping scene switch because OBS is disabled")
+            return
         logger.info("Switching scene to %s", scene_name)
         switch_to_scene(scene_name)
 
@@ -116,6 +130,9 @@ class OBSService:
         transition_type: str = "Fade",
         duration_ms: int = 500,
     ) -> None:
+        if not self._enabled:
+            logger.debug("Skipping smooth scene switch because OBS is disabled")
+            return
         logger.info(
             "Smooth-switching scene to %s using %s (%d ms)",
             scene_name,
@@ -133,10 +150,16 @@ class OBSService:
         return hide_source_in_scene(scene_name, source_name)
 
     def start_stream(self) -> None:
+        if not self._enabled:
+            logger.debug("Skipping start stream because OBS is disabled")
+            return
         set_scene_transition("Fade", 500)
         start_streaming()
 
     def stop_stream(self) -> None:
+        if not self._enabled:
+            logger.debug("Skipping stop stream because OBS is disabled")
+            return
         stop_streaming()
         obs_client_manager.disconnect()
 

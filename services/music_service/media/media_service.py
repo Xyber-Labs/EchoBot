@@ -75,7 +75,10 @@ class MediaInitializationService:
             soundcloud_downloader.download_songs()
         except Exception as e:
             logger.error(f"Error loading songs from soundcloud: {e}")
-            sys.exit(1)
+            logger.warning(
+                "Continuing without SoundCloud songs. Configure SOUNDCLOUD_CLIENT_ID to enable this feature."
+            )
+            return
 
     def load_videos_from_googledrive(self):
         logger.info("Loading videos from googledrive")

@@ -9,17 +9,6 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-FROM base AS dev
-
-COPY pyproject.toml uv.lock ./
-RUN uv sync --group dev --group debug
-
-COPY . .
-
-ENV PATH="/app/.venv/bin:$PATH"
-
-CMD ["tail", "-f", "/dev/null"]
-
 FROM base AS prod
 
 COPY pyproject.toml uv.lock ./
@@ -30,4 +19,4 @@ COPY . .
 ENV PATH="/app/.venv/bin:$PATH"
 ENV PYTHONPATH=/app
 
-CMD ["python", "-m", "services.chat_youtube_service.src.main", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "-m", "services.api.src.main", "--host", "0.0.0.0", "--port", "8000"]

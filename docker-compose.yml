@@ -1,21 +1,85 @@
+x-common-service: &common-service
+  env_file:
+    - .env
+  environment:
+    PYTHONPATH: /app
+    YOUTUBE_ENABLED: ${YOUTUBE_ENABLED:-false}
+    POLL_INTERVAL_SECONDS: ${POLL_INTERVAL_SECONDS:-30}
+  volumes:
+    - ./.env:/app/.env:ro
+    - ./logs:/app/logs:rw
+    - ./app/media:/app/media:rw
+  restart: unless-stopped
+
 services:
-  unified_container:
+  api:
+    <<: *common-service
     build:
       context: .
-      dockerfile: ./Dockerfile
-    image: unified_container
-    container_name: unified_container
-    command: ["tail", "-f", "/dev/null"]
+      dockerfile: ./services/api/Dockerfile
+      target: prod
+    image: echobot-api
+    container_name: echobot-api
+    command: ["python", "-m", "services.api.src.main", "--host", "0.0.0.0", "--port", "8000"]
     ports:
       - "8000:8000"
+
+  chat_youtube:
+    <<: *common-service
+    build:
+      context: .
+      dockerfile: ./services/chat_youtube_service/Dockerfile
+      target: prod
+    image: echobot-chat-youtube
+    container_name: echobot-chat-youtube
+    command: ["python", "-m", "services.chat_youtube_service.src.main", "--host", "0.0.0.0", "--port", "8001"]
+    ports:
       - "8001:8001"
+    depends_on:
+      - api
+
+  event_notifier:
+    <<: *common-service
+    build:
+      context: .
+      dockerfile: ./services/event_notifier_service/Dockerfile
+      target: prod
+    image: echobot-event-notifier
+    container_name: echobot-event-notifier
+    command: ["python", "-m", "services.event_notifier_service.src.main", "--host", "0.0.0.0", "--port", "8002"]
+    ports:
       - "8002:8002"
-      - "8003:8003"
-      - "8004:8004"
-    volumes:
-      - ./.env:/app/.env:ro
-      - ./logs:/app/logs:rw
-      - ./app/media:/app/app/media:rw
-    env_file:
-      - .env
-    restart: unless-stopped
+
+  news:
+    <<: *common-service
+    build:
+      context: .
+      dockerfile: ./services/news_service/Dockerfile
+    image: echobot-news
+    container_name: echobot-news
+    depends_on:
+      - event_notifier
+
+  music:
+    <<: *common-service
+    build:
+      context: .
+      dockerfile: ./services/music_service/Dockerfile
+    image: echobot-music
+    container_name: echobot-music
+    depends_on:
+      - event_notifier
+
+  obs:
+    <<: *common-service
+    build:
+      context: .
+      dockerfile: ./services/obs_stream_service/Dockerfile
+    image: echobot-obs
+    container_name: echobot-obs
+    depends_on:
+      - api
+      - chat_youtube
+      - music
+      - news
+      - event_notifier
