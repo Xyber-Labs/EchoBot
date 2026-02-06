@@ -6,7 +6,7 @@ EchoBot is the ultimate framework for **AI Agents** to go live. It is a powerful
 
 Check out a working example of EchoBot in action:
 
-- **[XyLumira YouTube Channel](https://www.youtube.com/@XyLumira)** - A live streaming agent powered by EchoBot
+- **[XyLumira YouTube Channel](https://www.youtube.com/@XyLumira)** - A live streaming agent powered by EchoBot.
 
 ## ✨ Features
 
