@@ -276,3 +276,16 @@ EchoBot uses a unified media structure to simplify content management. All media
 -   **OBS Connection Failed**: Ensure OBS is running and your WebSocket settings are correct.
 -   **Container Can't Write Files**: Check that the `{PROJECT_ROOT}/app/media` directory has the correct permissions.
 -   **Path Conversion Not Working**: Verify that `MEDIA_HOST_DIR` and `MEDIA_CONTAINER_DIR` are set correctly in your `.env` file.
+-   ## 💰 Solana (SOL) Donations & Tips – Feature Proposal
+
+This proposal suggests adding Solana (SOL) wallet integration to EchoBot
+to allow real-time donations and tips during live streams.
+
+- Streamers connect their Solana wallet (Phantom, Solflare, etc.)
+- Viewers can tip SOL during streams
+- Wallet address or QR code shown on stream
+- Optional on-screen alerts for donations
+
+### Contributor
+- GitHub: @Bruly67
+- SOL Wallet: 5cQN1nDx5ZhwbCNrGC6iMJkb4XR1X7e8u7JnmmSJCP4K
