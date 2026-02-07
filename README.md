@@ -26,7 +26,25 @@ Check out a working example of EchoBot in action:
 - **OBS Stream Service**: Controls OBS and manages the live stream.
 - **Event Notifier Service**: Receives events from other services and forwards them to configured webhook URLs (e.g., your website).
 
+## Getting Started
+
 ## 🛠️ Setup
+1. Clone the repository:
+```
+   git clone https://github.com/Xyber-Labs/EchoBot.git
+```
+2. Install dependencies:
+```
+   npm install
+```
+3. Run the bot:
+```
+   npm start
+```
+
+## Useful Links
+- [Xyber Documentation](https://docs.xyber.inc)
+- [Report Issues](https://github.com/Xyber-Labs/EchoBot/issues)
 
 ### Prerequisites
 
@@ -34,6 +52,8 @@ Check out a working example of EchoBot in action:
 - **Docker** and **Docker Compose**
 - **OBS Studio** with the WebSocket plugin enabled
 - **`uv`** package manager
+- Node.js v16 or higher
+- npm or yarn package manager
 
 ### 1. Install `uv`
 
@@ -266,6 +286,14 @@ EchoBot uses a unified media structure to simplify content management. All media
 1.  **Host Directory**: All media is stored in `{PROJECT_ROOT}/app/media` on your local machine.
 2.  **Container Mount**: This directory is mounted to `/app/media` in the container.
 3.  **Path Conversion**: The application provides helper functions to convert between host and container paths, ensuring seamless integration with OBS.
+
+## Contributing
+Want to contribute? Great! Here's how:
+1. Fork the repository
+2. Create your feature branch
+3. Make your changes
+4. Submit a pull request
+Please include your Solana wallet address in your PR description.
 
 ## 🐛 Troubleshooting
 
