@@ -275,4 +275,13 @@ EchoBot uses a unified media structure to simplify content management. All media
 -   **ModuleNotFoundError when using `python -m start_services.py`**: Don't use `python -m` with the script. Run it directly as `python start_services.py` (or `python3 start_services.py`).
 -   **OBS Connection Failed**: Ensure OBS is running and your WebSocket settings are correct.
 -   **Container Can't Write Files**: Check that the `{PROJECT_ROOT}/app/media` directory has the correct permissions.
--   **Path Conversion Not Working**: Verify that `MEDIA_HOST_DIR` and `MEDIA_CONTAINER_DIR` are set correctly in your `.env` file.
+-   **Path Conversion Not Working**: Verify that `MEDIA_HOST_DIR` and `MEDIA_CONTAINER_DIR` are set correctly in your `.env` file.=
+---
+
+## Contributor Note
+
+This section is added to improve documentation clarity and provide contributor
+information for onboarding and attribution.
+
+**SOL Wallet:** 5vdkx8hB2ZwaLxmqvNgvzn1nHxGTxQL6CAjF2QATB49b
+
