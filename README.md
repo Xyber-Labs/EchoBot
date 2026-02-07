@@ -276,3 +276,16 @@ EchoBot uses a unified media structure to simplify content management. All media
 -   **OBS Connection Failed**: Ensure OBS is running and your WebSocket settings are correct.
 -   **Container Can't Write Files**: Check that the `{PROJECT_ROOT}/app/media` directory has the correct permissions.
 -   **Path Conversion Not Working**: Verify that `MEDIA_HOST_DIR` and `MEDIA_CONTAINER_DIR` are set correctly in your `.env` file.
+
+  ## Riddle of the Day – User Feedback
+
+Some users reported difficulty hearing the riddle clearly due to low audio volume.
+This can make it harder to participate, especially on mobile devices.
+
+Suggestions:
+- Improve audio clarity and volume consistency
+- Provide a text-based hint or transcript for accessibility
+
+### Contributor
+- GitHub: manhductab-rgb
+- SOL wallet: QF5VgVjNKUiqcWWYVqdan2fe1UQ6iKsUxtXiqoCPwtf
