@@ -30,7 +30,7 @@ Check out a working example of EchoBot in action:
 
 ### Prerequisites
 
-- **Python 3.13+**
+- **Python 3.12+**
 - **Docker** and **Docker Compose**
 - **OBS Studio** with the WebSocket plugin enabled
 - **`uv`** package manager
