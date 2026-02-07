@@ -47,7 +47,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ```bash
 git clone <repository-url>
-cd echobot
+cd EchoBot
 ```
 
 ### 3. Set Up the Environment
