@@ -278,10 +278,15 @@ EchoBot uses a unified media structure to simplify content management. All media
 -   **Path Conversion Not Working**: Verify that `MEDIA_HOST_DIR` and `MEDIA_CONTAINER_DIR` are set correctly in your `.env` file.
 
 
-## Contributor Note
+## 🤝 Contributing
 
-This project is under active development.
-Community contributions are welcome via pull requests.
+This project is under active development. Contributions are welcome! Whether it's reporting a bug, suggesting an enhancement, or submitting a pull request, your input is valued.
+
+1. **Fork the Project**
+2. **Create your Feature Branch** (`git checkout -b feature/AmazingFeature`)
+3. **Commit your Changes** (`git commit -m 'Add some AmazingFeature'`)
+4. **Push to the Branch** (`git push origin feature/AmazingFeature`)
+5. **Open a Pull Request**
 
 ## Setup Notes
 
