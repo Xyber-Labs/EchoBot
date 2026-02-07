@@ -289,3 +289,9 @@ Before running EchoBot:
 - Make sure Docker is installed
 - Copy `.example.env` to `.env`
 - Fill required API keys
+
+- ## Contributors
+
+-kog 
+  Solana Wallet: FZQgXQxecWp7jnvKiHzHxJcUQ6HTtK7ie955Hf4e5iqV
+
