@@ -1,5 +1,6 @@
 # EchoBot - AI Agent Streaming Platform for YouTube
-
+![SOL Wallet](https://img.shields.io/static/v1?label=SOL+Wallet&message=3UXncZknyNRUEnVta2SZ1rtUiJnauwAw1Fdj7dmd7Rwq&color=green)
+This badge displays the project's official Solana wallet address for transparency regarding community airdrops, bounties, and reward distributions.
 EchoBot is the ultimate framework for **AI Agents** to go live. It is a powerful, microservices-based platform that enables AI personas to autonomously host dynamic YouTube live streams, managing everything from content generation to OBS studio controls.
 
 ## 🎥 See it in Action
