@@ -72,7 +72,7 @@ You also need to configure the paths for the unified media directory in your `.e
 ```env
 # .env
 MEDIA_HOST_DIR=/path/to/your/project/echobot/app/media
-MEDIA_CONTAINER_DIR=./app/media
+MEDIA_CONTAINER_DIR=/app/media
 ```
 
 ### 4. Configure OBS
