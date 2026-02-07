@@ -31,84 +31,59 @@ This service is configured using environment variables. At the root of the `echo
 
 ```env
 # --- YouTube OAuth (required) ---
-# See the "OAuth Setup" section below for instructions on how to get these.
-OAUTH_CLIENT_ID=your-google-oauth-client-id.apps.googleusercontent.com
-OAUTH_CLIENT_SECRET=your-google-oauth-client-secret
-YOUTUBE_REFRESH_TOKEN=your-youtube-refresh-token
+# Replace the placeholders below with your actual credentials
+OAUTH_CLIENT_ID=<INSERT_YOUR_CLIENT_ID_HERE>.apps.googleusercontent.com
+OAUTH_CLIENT_SECRET=<INSERT_YOUR_CLIENT_SECRET_HERE>
+YOUTUBE_REFRESH_TOKEN=<INSERT_YOUR_REFRESH_TOKEN_HERE>
 
 # --- Service Control ---
 YOUTUBE_ENABLED=true
-PRIVACY_STATUS=unlisted # 'public', 'private', or 'unlisted'
+PRIVACY_STATUS=unlisted  # Options: 'public', 'private', or 'unlisted'
 
 # --- LLM Provider ---
-# Set the API keys for the services you use.
-GOOGLE_API_KEY=
-TOGETHER_API_KEY=
+# Add your API keys for any AI services you plan to use
+GOOGLE_API_KEY=<INSERT_YOUR_GOOGLE_API_KEY_HERE>
+TOGETHER_API_KEY=<INSERT_YOUR_TOGETHER_API_KEY_HERE>
 ```
 *(For a full list of all possible environment variables, see `services/chat_youtube_service/env.example`)*
 
-#### 2. OAuth Setup (Getting YouTube Refresh Token)
+[09:53, 07/02/2026] mwaqasamin1987: # --- YouTube OAuth (required) ---
+# Replace the placeholders below with your actual credentials
+OAUTH_CLIENT_ID=<INSERT_YOUR_CLIENT_ID_HERE>.apps.googleusercontent.com
+OAUTH_CLIENT_SECRET=<INSERT_YOUR_CLIENT_SECRET_HERE>
+YOUTUBE_REFRESH_TOKEN=<INSERT_YOUR_REFRESH_TOKEN_HERE>
 
-To interact with the YouTube API, the service needs OAuth credentials. Follow these steps to get your refresh token:
+# --- Service Control ---
+YOUTUBE_ENABLED=true
+PRIVACY_STATUS=unlisted  # Options: 'public', 'private', or 'unlisted'
 
-**Step 1: Enable YouTube Data API v3**
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Select or create a project
-3. Navigate to **APIs & Services** > **Library**
-4. Search for "YouTube Data API v3"
-5. Click **Enable**
+# --- LLM Provider ---
+# Add your API keys for any AI services you plan to use
+GOOGLE_API_KEY=<INSERT_YOUR_GOOGLE_API_KEY_HERE>
+TOGETHER_API_KEY=<INSERT_YOUR_TOGETHER_API_KEY_HERE>
+[10:04, 07/02/2026] mwaqasamin1987: ### OAuth Setup (Getting YouTube Refresh Token)
 
-**Step 2: Configure OAuth Consent Screen**
-1. Go to **APIs & Services** > **OAuth consent screen**
-2. Choose **External** (unless you have a Google Workspace account)
-3. Fill in the required fields:
-   - App name: "EchoBot Chat Bot" (or your choice)
-   - User support email: Your email
-   - Developer contact: Your email
-4. Click **Save and Continue**
-5. On **Scopes** page, click **Add or Remove Scopes**
-6. Search for and add: `https://www.googleapis.com/auth/youtube.force-ssl`
-7. Click **Save and Continue**
-8. Add test users (your Google account) if in testing mode
-9. Click **Save and Continue** through the remaining screens
+1. *Enable YouTube Data API v3*  
+   - Go to Google Cloud Console → APIs & Services → Library → Search "YouTube Data API v3" → Enable.
 
-**Step 3: Create OAuth Client ID**
-1. Go to **APIs & Services** > **Credentials**
-2. Click **+ CREATE CREDENTIALS** > **OAuth client ID**
-3. Choose **Desktop application** as the application type
-4. Give it a name (e.g., "EchoBot Chat Bot")
-5. Click **Create**
-6. A popup will show your **Client ID** and **Client Secret** - copy these immediately (you can't see the secret again)
+2. *Configure OAuth Consent Screen*  
+   - Choose External, fill app name, support email, developer email → Save.  
+   - Add scope: https://www.googleapis.com/auth/youtube.force-ssl.
 
-**Step 4: Add Credentials to `.env` File**
-Add the following to your project's root `.env` file:
-```env
-OAUTH_CLIENT_ID=your-client-id-here.apps.googleusercontent.com
-OAUTH_CLIENT_SECRET=your-client-secret-here
-```
+3. *Create OAuth Client ID*  
+   - Go to APIs & Services → Credentials → +CREATE CREDENTIALS → OAuth client ID → Desktop application → Create.  
+   - Copy Client ID & Client Secret.
 
-**Step 5: Generate Refresh Token**
-1. From the root of the `echobot` project, run:
-   ```bash
-   python scripts/get_youtube_refresh_token.py
-   ```
-2. A browser window will automatically open
-3. **Log in with the Google account that owns your YouTube channel**
-4. Click **Allow** to grant permissions
-5. The script will print your **refresh token** in the terminal
+4. *Add Credentials to .env*  
+   ```env
+   OAUTH_CLIENT_ID=your-client-id.apps.googleusercontent.com
+   OAUTH_CLIENT_SECRET=your-client-secret
 
-**Step 6: Add Refresh Token to `.env`**
-Add the refresh token to your `.env` file:
-```env
-YOUTUBE_REFRESH_TOKEN=your-refresh-token-here
-```
+   Generate Refresh Token
+Run: python scripts/get_youtube_refresh_token.py
+Browser opens → Login → Allow permissions → Copy token from terminal.
 
-**Troubleshooting:**
-- If you see "redirect_uri_mismatch": Make sure you selected "Desktop application" when creating the OAuth client
-- If refresh token is not generated: Make sure you're using a Google account that has access to YouTube
-- If the script fails: Verify `OAUTH_CLIENT_ID` and `OAUTH_CLIENT_SECRET` are correctly set in your `.env` file
-
-That's it! The service is now configured to authenticate with YouTube.
+YOUTUBE_REFRESH_TOKEN=your-refresh-token
 
 ## 🎮 Usage
 
@@ -151,14 +126,16 @@ docker run -d --rm --name chat_youtube_service_container -p 8002:8002 -v "$(pwd)
 
 ## 🛡️ Healthcheck & Self‑Healing Behavior
 
-- The `/healthcheck` returns `200 OK` with `{ "chat_url": "<youtube_url>" }` when:
-  - There is an active broadcast (`live`) with chat, or
-  - The broadcast is `upcoming` (waiting room) and chat is already available.
-- The endpoint returns `503 Service Unavailable` with a helpful `detail` message only when the broadcast is definitively inactive or missing.
-- The service is **self‑healing**:
-  - If a broadcast is deleted/ended, the service clears its internal state and automatically attempts to find/create a new broadcast on the next cycle.
-  - Right after creating a broadcast, it patiently waits for the chat to initialize (retries for ~30 seconds) before declaring chat unavailable.
-  - Transient API/network errors during verification do not immediately mark the broadcast as invalid, avoiding false negatives.
+- The /healthcheck endpoint returns:
+- 200 OK with { "chat_url": "<youtube_url>" } if:
+  - There is an active live broadcast with chat, or
+  - The broadcast is upcoming (waiting room) and chat is available.
+- 503 Service Unavailable if the broadcast is missing or inactive.
+
+Self‑Healing Behavior:
+- If a broadcast ends or is deleted, the service clears its internal state and tries to start the next valid broadcast automatically.
+- After creating a broadcast, it waits ~30 seconds for chat to initialize before marking it unavailable.
+- Temporary API or network errors during checks do NOT mark the broadcast invalid, preventing false negatives.
 
 ---
 
