@@ -276,3 +276,10 @@ EchoBot uses a unified media structure to simplify content management. All media
 -   **OBS Connection Failed**: Ensure OBS is running and your WebSocket settings are correct.
 -   **Container Can't Write Files**: Check that the `{PROJECT_ROOT}/app/media` directory has the correct permissions.
 -   **Path Conversion Not Working**: Verify that `MEDIA_HOST_DIR` and `MEDIA_CONTAINER_DIR` are set correctly in your `.env` file.
+
+## 🔐 API Key Security
+
+- Never commit API keys, tokens, or secrets to the repository
+- Use environment variables or `.env` files for local development
+- Ensure `.env` files are added to `.gitignore`
+- Rotate keys immediately if they are exposed
