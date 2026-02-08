@@ -22,14 +22,50 @@
                         "sources": [
                             "dj_01",
                             "dj_02",
-                            "dj_03"
+                            "dj_03",
+                            "dj_04",
+                            "dj_05",
+                            "dj_06",
+                            "dj_07"
                         ]
                     },
                     {
                         "scene": "Scene-Music-Location2",
                         "sources": [
-                            "dj_04",
-                            "dj_05"
+                            "dj_08",
+                            "dj_09",
+                            "dj_10",
+                            "dj_11",
+                            "dj_12"
+                        ]
+                    },
+                    {
+                        "scene": "Scene-Music-Location3",
+                        "sources": [
+                            "dj_13",
+                            "dj_14",
+                            "dj_15",
+                            "dj_16",
+                            "dj_17"
+                        ]
+                    },
+                    {
+                        "scene": "Scene-Music-Location4",
+                        "sources": [
+                            "dj_18",
+                            "dj_19",
+                            "dj_20",
+                            "dj_21",
+                            "dj_22"
+                        ]
+                    },
+                    {
+                        "scene": "Scene-Music-Location5",
+                        "sources": [
+                            "dj_23",
+                            "dj_24",
+                            "dj_25",
+                            "dj_26"
                         ]
                     }
                 ]
@@ -73,14 +109,50 @@
                         "sources": [
                             "dj_01",
                             "dj_02",
-                            "dj_03"
+                            "dj_03",
+                            "dj_04",
+                            "dj_05",
+                            "dj_06",
+                            "dj_07"
                         ]
                     },
                     {
                         "scene": "Scene-Music-Location2",
                         "sources": [
-                            "dj_04",
-                            "dj_05"
+                            "dj_08",
+                            "dj_09",
+                            "dj_10",
+                            "dj_11",
+                            "dj_12"
+                        ]
+                    },
+                    {
+                        "scene": "Scene-Music-Location3",
+                        "sources": [
+                            "dj_13",
+                            "dj_14",
+                            "dj_15",
+                            "dj_16",
+                            "dj_17"
+                        ]
+                    },
+                    {
+                        "scene": "Scene-Music-Location4",
+                        "sources": [
+                            "dj_18",
+                            "dj_19",
+                            "dj_20",
+                            "dj_21",
+                            "dj_22"
+                        ]
+                    },
+                    {
+                        "scene": "Scene-Music-Location5",
+                        "sources": [
+                            "dj_23",
+                            "dj_24",
+                            "dj_25",
+                            "dj_26"
                         ]
                     }
                 ]
