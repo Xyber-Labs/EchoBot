@@ -42,7 +42,8 @@ class OBSClientManager:
     def get_client(self) -> Optional[obs.ReqClient]:
         """Gets the current OBS client, connecting if necessary."""
         with self._lock:
-            if os.getenv("RADIO_DISABLE_OBS") == "1":
+            disable_obs = os.getenv("RADIO_DISABLE_OBS", "").lower()
+            if disable_obs in ("1", "true", "yes", "on"):
                 return None  # FOR TESTS
             if not self._enabled:
                 raise RuntimeError(

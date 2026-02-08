@@ -1649,27 +1649,35 @@ def list_scene_sources(scene_name: str) -> list[dict[str, object]]:
         logging.info(f"Listing sources in scene '{scene_name}'")
 
         # Get scene items
-        scene_items = cl.get_scene_item_list(scene_name)
-        if not scene_items:
+        scene_items_response = cl.get_scene_item_list(scene_name)
+        if not scene_items_response:
             logging.warning(f"No scene items found in '{scene_name}'")
             return []
 
         sources = []
-        items = getattr(scene_items, "scene_items", [])
+        
+        # Handle both dataclass with scene_items attribute and direct list
+        items = getattr(scene_items_response, "scene_items", None)
+        if items is None:
+            # Fallback: scene_items_response might be the list directly or another structure
+            logging.debug(f"Debug: scene_items_response type: {type(scene_items_response)}, dir: {dir(scene_items_response)}")
+            items = []
+        
         if not items:
             logging.warning(f"No scene items found in '{scene_name}'")
             return []
 
         for item in items:
-            if (
-                hasattr(item, "sourceName")  # noqa
-                and hasattr(item, "sceneItemEnabled")  # noqa
-                and hasattr(item, "sceneItemId")  # noqa
-            ):
+            # Handle both dataclass objects and dicts
+            source_name = getattr(item, "sourceName", None) or item.get("sourceName") if isinstance(item, dict) else None
+            source_enabled = getattr(item, "sceneItemEnabled", None) or item.get("sceneItemEnabled") if isinstance(item, dict) else None
+            source_id = getattr(item, "sceneItemId", None) or item.get("sceneItemId") if isinstance(item, dict) else None
+            
+            if source_name and source_enabled is not None and source_id is not None:
                 source_info = {
-                    "name": item.sourceName,
-                    "visible": item.sceneItemEnabled,
-                    "id": item.sceneItemId,
+                    "name": source_name,
+                    "visible": source_enabled,
+                    "id": source_id,
                 }
                 sources.append(source_info)
                 logging.info(

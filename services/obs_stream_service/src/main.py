@@ -7,7 +7,7 @@ from config.config import Settings
 from services.obs_stream_service.core.flow import RadioFlow
 from app_logging.logger import logger
 from services.music_service.media.media_service import initialize_media_once
-
+import os
 
 settings = Settings()
 
@@ -18,9 +18,12 @@ logger.info(f"OBS_PORT = {settings.obs.OBS_PORT}")
 
 def main() -> None:
     # Initialize all media before starting any services
-    logger.info("🚀 Initializing all media...")
-    initialize_media_once()
-    logger.info("✅ All media initialized successfully.")
+    if os.getenv("OBS_ONLY_MODE") == "true":
+        logger.info("⚡ OBS ONLY MODE — skip media initialization")
+    else:
+        logger.info("🚀 Initializing all media...")
+        initialize_media_once()
+        logger.info("✅ All media initialized successfully.")
 
     # Start API process first
     logger.info("Starting radio flow...")

@@ -1,0 +1,29 @@
+{
+    "dj_sources": {
+        "dj_01": {
+            "name": "BTC Price (TradingView)",
+            "url": "http://localhost:8000/charts.html?symbol=BTCUSDT",
+            "type": "browser_source"
+        },
+        "dj_02": {
+            "name": "ETH Price (TradingView)",
+            "url": "http://localhost:8000/charts.html?symbol=ETHUSDT",
+            "type": "browser_source"
+        },
+        "dj_03": {
+            "name": "Whale Alert Transactions",
+            "url": "https://whale-alert.io/transactions",
+            "type": "browser_source"
+        },
+        "dj_04": {
+            "name": "Arkham Intelligence Explorer",
+            "url": "https://arkhamintelligence.com/explorer",
+            "type": "browser_source"
+        },
+        "dj_05": {
+            "name": "DJ Visual 05",
+            "url": null,
+            "type": "video_source"
+        }
+    }
+}

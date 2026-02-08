@@ -310,14 +310,7 @@ class SubsceneCycler:
                     scene_name,
                 )
 
-                # Turn on the current source (ignore errors if source doesn't exist)
-                try:
-                    self._obs.switch_on_media_source(scene_name, current_source)
-                except Exception as e:
-                    logger.warning(f"Failed to show source '{current_source}' in '{scene_name}': {e}")
-                    continue  # Skip to next iteration if source doesn't exist
-
-                # Turn off all other sources (ignore errors if source doesn't exist)
+                # Turn off all other sources FIRST (ignore errors if source doesn't exist)
                 for source in sources:
                     if source != current_source:
                         try:
@@ -328,6 +321,13 @@ class SubsceneCycler:
                         except Exception as e:
                             # Source might not exist in this scene, that's okay
                             logger.debug(f"Source '{source}' not found in '{scene_name}', skipping: {e}")
+
+                # Turn on the current source (ignore errors if source doesn't exist)
+                try:
+                    self._obs.switch_on_media_source(scene_name, current_source)
+                except Exception as e:
+                    logger.warning(f"Failed to show source '{current_source}' in '{scene_name}': {e}")
+                    continue  # Skip to next iteration if source doesn't exist
 
                 # Sleep for media_source_cycle_duration (interruptible)
                 slept = 0.0
