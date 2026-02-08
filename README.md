@@ -17,6 +17,18 @@ Check out a working example of EchoBot in action:
 - **Unified Media Management**: A centralized media directory simplifies content management and ensures consistent access across all services.
 - **Live Agent Interaction**: The AI Agent engages with your audience in real-time via YouTube chat, answering questions and reacting to comments.
 
+## ⚡ Quick Start (Local Development)
+
+This quick start is intended for contributors who want to explore or improve EchoBot without running the full streaming stack.
+
+### Minimal Setup (Docs & API Work)
+You do **not** need OBS, YouTube credentials, or all services running to contribute documentation, configuration, or API-level improvements.
+
+1. Install dependencies:
+```bash
+uv sync
+source .venv/bin/activate
+
 ## 🏗️ Architecture
 
 - **API Service**: Exposes an API for managing the streaming agent and its services.
@@ -30,7 +42,7 @@ Check out a working example of EchoBot in action:
 
 ### Prerequisites
 
-- **Python 3.13+**
+- **Python 3.10+**
 - **Docker** and **Docker Compose**
 - **OBS Studio** with the WebSocket plugin enabled
 - **`uv`** package manager
@@ -62,7 +74,7 @@ source .venv/bin/activate
 Next, copy the example environment file and update it with your credentials:
 
 ```bash
-cp .env.example .env
+cp .example.env .env
 ```
 
 You will need to fill in your API keys for Google, ElevenLabs, and any other services you plan to use.
@@ -72,7 +84,7 @@ You also need to configure the paths for the unified media directory in your `.e
 ```env
 # .env
 MEDIA_HOST_DIR=/path/to/your/project/echobot/app/media
-MEDIA_CONTAINER_DIR=./app/media
+MEDIA_CONTAINER_DIR should normally be left as /app/media unless you are modifying container mounts.
 ```
 
 ### 4. Configure OBS
@@ -280,8 +292,9 @@ EchoBot uses a unified media structure to simplify content management. All media
 
 ## Contributor Note
 
-This project is under active development.
-Community contributions are welcome via pull requests.
+This project is under active development. Community contributions are welcome via pull requests.
+You do not need to run the full streaming pipeline to contribute. Documentation improvements, configuration fixes, logging clarity, and service-level enhancements are all valuable contributions.
+
 
 ## Setup Notes
 
