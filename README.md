@@ -289,3 +289,6 @@ Before running EchoBot:
 - Make sure Docker is installed
 - Copy `.example.env` to `.env`
 - Fill required API keys
+- ## Community Contribution
+Thanks to all contributors supporting EchoBot development.
+
