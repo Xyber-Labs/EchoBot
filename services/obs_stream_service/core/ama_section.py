@@ -10,9 +10,7 @@ from app_logging.logger import logger
 from config.config import Settings
 from LLM.llm_utils import generate_llm_response_async, clean_for_voice
 from LLM import load_agent_personality, load_json
-    AMA_reply_prompt,
-)
-
+from services.obs_stream_service.core.ama_promts import AMA_reply_prompt
 from voice.generate import generate_voice
 from config.config import Settings
 import yaml
