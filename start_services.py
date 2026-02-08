@@ -9,6 +9,7 @@ SERVICES: dict[str, str] = {
     "obs": "services/obs_stream_service/src/main.py",
     "music": "services/music_service/src/main.py",
     "news": "services/news_service/src/main.py",
+    "echopulse": "services/echopulse_service/generate_pulse.py",
     "api": "services/api/src/main.py --port 8000",
     "event_notifier": "services/event_notifier_service/src/main.py --port 8002",
 }

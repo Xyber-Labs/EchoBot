@@ -35,7 +35,9 @@ script_arxiv.py
 code_fetcher.py
 code_output.json
 
-
+# local test assets
+app/media/voice/
+app/media/state/pulse.json
 
 # Logs
 logs/
@@ -76,3 +78,7 @@ music/google_drive_songs/
 
 # Media directory
 app/media/
+
+# EchoPulse local test assets (do not commit)
+app/media/voice/
+app/media/state/pulse.json

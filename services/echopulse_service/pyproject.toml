@@ -1,0 +1,74 @@
+[project]
+name = "news-service"
+version = "0.0.1"
+description = "News service for EchoBot."
+authors = [
+    { name = "xymanchick, xyagent, wotori" }
+]
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi==0.116.1",
+    "uvicorn==0.35.0",
+    "pydantic==2.11.7",
+    "pydantic-settings==2.10.1",
+    "requests==2.32.4",
+    "langgraph==0.6.6",
+    "langchain-community==0.3.21",
+    "tavily-python==0.7.12",
+    "openai==1.98.0",
+    "langchain_openai==0.3.9",
+    "httpx==0.28.1",
+    "markdownify==0.11.0",
+    "python-dotenv==1.1.1",
+    "google-auth==2.40.3",
+    "google-auth-oauthlib==1.2.2",
+    "google-api-python-client==2.177.0",
+    "mutagen==1.47.0",
+    "pydub==0.25.1",
+    "schedule==1.2.2",
+    "opencv-python-headless==4.10.0.84",
+    "moviepy==2.2.1",
+    "SClib==1.0.0",
+    "soundcloud-lib==0.6.1",
+    "gdown==5.2.0",
+    "elevenlabs==2.16.0",
+    "langchain_mcp_adapters==0.1.9",
+    "langchain-google-genai==2.1.12",
+    "langchain-mistralai==0.2.12",
+    "langchain-together==0.3.1",
+    "mutagen==1.47.0",
+]
+
+
+[project.optional-dependencies]
+dev = ["mypy>=1.11.1", "ruff>=0.6.1"]
+
+[build-system]
+requires = ["setuptools>=73.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+lint.select = [
+    "E",    # pycodestyle
+    "F",    # pyflakes
+    "I",    # isort
+    "D",    # pydocstyle
+    "D401", # First line should be in imperative mood
+    "T201",
+    "UP",
+]
+lint.ignore = [
+    "UP006",
+    "UP007",
+    "UP035",
+    "D417",
+    "E501",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D", "UP"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
