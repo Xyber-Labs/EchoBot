@@ -1694,7 +1694,16 @@ def hide_source_in_scene(scene_name: str, source_name: str) -> bool:
     """
     try:
         cl = obs_client_manager.get_client()
-        logging.info(f"Hiding source '{source_name}' in scene '{scene_name}'")
+        # Check if the source exists in the scene to avoid triggering OBSWS exceptions
+        try:
+            scene_sources = list_scene_sources(scene_name)
+        except Exception:
+            scene_sources = []
+
+        if not any(s.get("name") == source_name for s in scene_sources):
+            logging.debug(
+                f"Source '{source_name}' not found in scene '{scene_name}' (skipping get_scene_item_id)")
+            return False
 
         # Get the scene item ID
         scene_item_id = cl.get_scene_item_id(scene_name, source_name)
@@ -1730,12 +1739,21 @@ def show_source_in_scene(scene_name: str, source_name: str) -> bool:
     """
     try:
         cl = obs_client_manager.get_client()
-        logging.info(f"Showing source '{source_name}' in scene '{scene_name}'")
+        # Check if the source exists in the scene to avoid triggering OBSWS exceptions
+        try:
+            scene_sources = list_scene_sources(scene_name)
+        except Exception:
+            scene_sources = []
+
+        if not any(s.get("name") == source_name for s in scene_sources):
+            logging.debug(
+                f"Source '{source_name}' not found in scene '{scene_name}' (skipping get_scene_item_id)")
+            return False
 
         # Get the scene item ID
         scene_item_id = cl.get_scene_item_id(scene_name, source_name)
         if not scene_item_id or not hasattr(scene_item_id, "scene_item_id"):
-            logging.warning(f"Source '{source_name}' not found in scene '{scene_name}'")
+            logging.debug(f"Source '{source_name}' not found in scene '{scene_name}' (this is normal when switching locations)")
             return False
 
         item_id = scene_item_id.scene_item_id  # type:ignore
@@ -1748,9 +1766,12 @@ def show_source_in_scene(scene_name: str, source_name: str) -> bool:
         return True
 
     except Exception as e:
-        logging.error(
-            f"Failed to show source '{source_name}' in scene '{scene_name}': {e}"
-        )
+        # Check if it's a "source not found" error (code 600)
+        error_msg = str(e)
+        if "code 600" in error_msg or "No scene items were found" in error_msg:
+            logging.debug(f"Source '{source_name}' not found in scene '{scene_name}' (this is normal when switching locations): {e}")
+        else:
+            logging.warning(f"Failed to show source '{source_name}' in scene '{scene_name}': {e}")
         return False
 
 
