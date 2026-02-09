@@ -126,7 +126,7 @@ You can run all the services at once using Docker Compose:
 ```bash
 docker-compose up -d --build
 ```
-
+wow
 To run services, you can use the `start_services.py` script. **Make sure your virtual environment is activated** (see Setup step 3):
 
 ```bash
