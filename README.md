@@ -83,7 +83,13 @@ cd echobot
 uv sync
 ```
 
-### 3. Create Environment File
+### 3. Create Media Directories
+
+```bash
+mkdir -p app/media/{videos,voice/generated_audio,music,news,state,memory}
+```
+
+### 4. Create Environment File
 
 ```bash
 cp .example.env .env
@@ -101,19 +107,13 @@ OBS_PASSWORD=your_obs_password
 MEDIA_HOST_DIR=/path/to/echobot/app/media
 ```
 
-### 4. Enable OBS WebSocket
+### 5. Enable OBS WebSocket
 
 1. Open OBS Studio
 2. **Menu bar** (top of screen on macOS) → **Tools** → **WebSocket Server Settings**
 3. Check "Enable WebSocket server"
 4. Set a password and note the port (default: 4455)
 5. Click OK
-
-### 5. Create Media Directories
-
-```bash
-mkdir -p app/media/{videos,voice/generated_audio,music,news,state,memory}
-```
 
 
 ### 6. Prepare Your Media 🎞️
