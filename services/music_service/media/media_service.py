@@ -74,15 +74,16 @@ class MediaInitializationService:
             soundcloud_downloader = Soundcloud(self.settings)
             soundcloud_downloader.download_songs()
         except Exception as e:
-            logger.error(f"Error loading songs from soundcloud: {e}")
-            sys.exit(1)
+            logger.warning(f"Error loading songs from soundcloud: {e}")
+            logger.warning("Skipping SoundCloud initialization - not configured. You can add local music files to app/media/music/ instead.")
 
     def load_videos_from_googledrive(self):
         logger.info("Loading videos from googledrive")
         try:
             load_videos_from_google_drive()
         except Exception as e:
-            logger.error(f"Error loading videos from googledrive: {e}")
+            logger.warning(f"Error loading videos from googledrive: {e}")
+            logger.warning("Skipping Google Drive initialization - not configured. You can add local video files to app/media/videos/ instead.")
 
     def set_schedule_for_soundcloud_downloader(self):
         logger.info("Setting schedule for soundcloud downloader")

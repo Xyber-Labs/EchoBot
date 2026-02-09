@@ -1,6 +1,17 @@
-# EchoBot - AI Agent Streaming Platform for YouTube
+<div align="center">
 
-EchoBot is the ultimate framework for **AI Agents** to go live. It is a powerful, microservices-based platform that enables AI personas to autonomously host dynamic YouTube live streams, managing everything from content generation to OBS studio controls.
+# 🎬 EchoBot
+
+The ultimate framework for **AI Agents** to go live on YouTube
+
+Microservices-based platform that enables AI personas to autonomously host dynamic live streams — from content generation to OBS studio controls
+
+[![Python](https://img.shields.io/badge/Python-3.13+-yellow?logo=python)](https://python.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![OBS](https://img.shields.io/badge/OBS-WebSocket-purple?logo=obsstudio)](https://obsproject.com)
+[![YouTube](https://img.shields.io/badge/YouTube-Live-red?logo=youtube)](https://www.youtube.com/@XyLumira)
+
+</div>
 
 ## 🎥 See it in Action
 
@@ -19,273 +30,271 @@ Check out a working example of EchoBot in action:
 
 ## 🏗️ Architecture
 
-- **API Service**: Exposes an API for managing the streaming agent and its services.
-- **Chat YouTube Service**: Manages YouTube chat interaction and AI-powered responses.
-- **Music Service**: Handles music generation, downloads, and playback.
-- **News Service**: Aggregates news and generates scripts for the AI persona.
-- **OBS Stream Service**: Controls OBS and manages the live stream.
-- **Event Notifier Service**: Receives events from other services and forwards them to configured webhook URLs (e.g., your website).
+| Service | Description |
+|---------|-------------|
+| **API Service** | Exposes an API for managing the streaming agent and its services |
+| **Chat YouTube Service** | Manages YouTube chat interaction and AI-powered responses |
+| **Music Service** | Handles music generation, downloads, and playback |
+| **News Service** | Aggregates news and generates scripts for the AI persona |
+| **OBS Stream Service** | Controls OBS and manages the live stream |
+| **Event Notifier Service** | Receives events from other services and forwards them to configured webhook URLs |
 
-## 🛠️ Setup
+## 📌 Status
 
-### Prerequisites
+EchoBot is under active development. Community contributions are welcome via pull requests.
 
-- **Python 3.13+**
-- **Docker** and **Docker Compose**
-- **OBS Studio** with the WebSocket plugin enabled
-- **`uv`** package manager
+---
 
-### 1. Install `uv`
+## 📋 Prerequisites
 
-If you don't have `uv` installed, you can install it with the following command:
+Install the following tools before proceeding:
+
+
+| Tool | Purpose |
+|------|---------|
+| **Python 3.13+** | Runtime |
+| **ffmpeg** | Audio/video duration detection |
+| **tmux** | Service management (required by start_services.py) |
+| **OBS Studio** | Stream control (has built-in WebSocket server) |
+| **Docker** | Optional, for containerized deployment |
+
+**Install via Homebrew (macOS/Linux):**
+```bash
+brew install ffmpeg tmux
+```
+
+---
+
+## 🚀 Quickstart
+
+### 1. Install `uv` Package Manager
+
+If you don't have `uv` installed, install it with the following command:
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-### 2. Clone the Repository
+### 2. Clone and Install Dependencies
 
 ```bash
 git clone <repository-url>
 cd echobot
-```
-
-### 3. Set Up the Environment
-
-First, create a virtual environment and install the required dependencies:
-
-```bash
 uv sync
-source .venv/bin/activate
 ```
 
-Next, copy the example environment file and update it with your credentials:
+### 3. Create Environment File
 
 ```bash
-cp .env.example .env
+cp .example.env .env
 ```
 
-You will need to fill in your API keys for Google, ElevenLabs, and any other services you plan to use.
-
-You also need to configure the paths for the unified media directory in your `.env` file. Set `MEDIA_HOST_DIR` to the **absolute path** of the `app/media` directory within your project. `MEDIA_CONTAINER_DIR` should be left as `/app/media`.
+Edit `.env` with minimum required values:
 
 ```env
-# .env
-MEDIA_HOST_DIR=/path/to/your/project/echobot/app/media
-MEDIA_CONTAINER_DIR=./app/media
+# OBS Connection
+OBS_HOST=localhost
+OBS_PORT=4455
+OBS_PASSWORD=your_obs_password
+
+# Media root (absolute path to your media folder)
+MEDIA_HOST_DIR=/path/to/echobot/app/media
 ```
 
-### 4. Configure OBS
+### 4. Enable OBS WebSocket
 
-1.  In OBS, go to **Tools** -> **WebSocket Server Settings**.
-2.  Enable the WebSocket server and set a password.
-3.  Update your `.env` file with your OBS host, port, and password.
+1. Open OBS Studio
+2. **Menu bar** (top of screen on macOS) → **Tools** → **WebSocket Server Settings**
+3. Check "Enable WebSocket server"
+4. Set a password and note the port (default: 4455)
+5. Click OK
 
-### 5. Configure Event Notifier (Optional)
-
-If you want to receive event notifications (e.g., when news sections start) on your website or external service:
-
-1. Add your webhook URL(s) to your `.env` file:
-   ```env
-   EVENT_WEBHOOK_URLS=https://your-hub.example.com/api/agents/generic/event
-   ```
-   Or multiple URLs (comma-separated):
-   ```env
-   EVENT_WEBHOOK_URLS=https://your-hub.example.com/api/agents/generic/event,https://dev.example.com/api/agents/generic/event
-   ```
-
-2. Your webhook endpoint should accept POST requests with JSON payloads like:
-   ```json
-   {
-     "event": "news_section_started",
-     "timestamp": "2024-01-15T14:30:00Z",
-     "scene": "ai_robotics_news",
-     "audio_file": "audio_ai_robotics_20240115_143000.mp3",
-     "duration_seconds": 180.5
-   }
-   ```
-
-3. The event_notifier service runs on port `8002` by default (configurable via `EVENT_NOTIFIER_PORT`).
-
-### 6. Set Up the Media Directory
-
-The platform uses a unified media directory to manage all content. To set it up, run the following script:
+### 5. Create Media Directories
 
 ```bash
-./scripts/setup_media_dirs.sh
+mkdir -p app/media/{videos,voice/generated_audio,music,news,state,memory}
 ```
 
-This will create the `app/media` directory inside your project root, along with all the necessary subdirectories.
 
-## 🚀 Usage
+### 6. Prepare Your Media 🎞️
 
-### Running the Services
+All media files are stored in `app/media/`:
 
-You can run all the services at once using Docker Compose:
+```
+app/media/
+├── videos/              # Your video files (.mp4, .mov, .webm)
+├── music/               # Background music and soundtracks (.mp3, .wav)
+└── voice/generated_audio/  # Generated voiceovers (auto-created by news service)
+```
+
+**Videos**: Place all video files in `app/media/videos/`
+- Use for scene backgrounds (looping animations, DJ visuals, etc.)
+- Supported formats: `.mp4`, `.mov`, `.webm`
+- Tip: Videos without audio track work best (audio is managed separately)
+
+**Music**: Place audio files in `app/media/music/`
+- Use for background music that plays continuously
+- Supported formats: `.mp3`, `.wav`
+
+
+### 7. Configure Your Scenes 📅
+
+EchoBot uses **two configuration files** to control what plays and when:
+
+| File | Purpose |
+|------|---------|
+| `config/schedule.json` | **Scene Registry** — defines available scenes with their video/audio files |
+| `services/obs_stream_service/core/playlist.json` | **Execution Sequence** — defines which scenes play and for how long |
+
+#### Step 1: Edit `config/schedule.json`
+
+Define all available scenes and match them to your media files:
+
+```jsonc
+{
+  "background_music": {
+    "enabled": true,
+    "file_path": "music/song.mp3",      // Your music file from step 6
+    "loop": true,
+    "volume_normal": 0.3,
+    "volume_ducked": 0.1
+  },
+  "current_scene": {
+    "scene_name": "Scene-Music",
+    "video_path": "videos/visual.mp4",
+    "has_audio": false
+  },
+  "_available_scenes": {
+    "music": {                           // Scene identifier (use this in playlist.json)
+      "scene_name": "Scene-Music",       // OBS scene name (will be auto-created)
+      "video_path": "videos/visual.mp4", // Your video file from step 6
+      "video_source_name": "MusicVideo", // [Required] Unique identifier
+      "has_audio": false,                // [Required] false = music stays at 30%
+      "loop_video": true                 // [Required] true = loops forever
+    }
+    // Add more scenes here as needed
+  }
+}
+```
+
+#### Step 2: Edit `services/obs_stream_service/core/playlist.json`
+
+Define the execution sequence:
+
+```jsonc
+{
+    "variables": {
+        "music_duration": 300           // 5 minutes in seconds
+    },
+    "playlist": [
+        {
+            "scene_name": "music",      // References "music" from schedule.json above
+            "duration": "$music_duration"
+        }
+        // Add more scenes here to create a sequence
+    ]
+}
+```
+
+**How it works:**
+- RadioFlow reads the `playlist` array sequentially
+- For each scene, it looks up the definition in `schedule.json`
+- After the duration expires, it moves to the next scene
+- When the playlist ends, it loops back to the beginning
+- The system runs **fully autonomously** — no manual intervention required
+
+#### Step 3: Auto-Create OBS Scenes
+
+Run this script to create all scenes in OBS automatically:
 
 ```bash
-docker-compose up -d --build
+uv run python -m services.obs_stream_service.scripts.init_obs_scenes
 ```
 
-To run services, you can use the `start_services.py` script. **Make sure your virtual environment is activated** (see Setup step 3):
+This reads your `schedule.json` and creates the OBS scenes with video/audio sources.
+
+---
+
+## 9. Running EchoBot ▶️
+
+### Launch the OBS Service
 
 ```bash
-source .venv/bin/activate
+uv run python start_services.py --launch obs
 ```
 
-**To launch all services:**
+This will:
+- Connect to OBS via WebSocket
+- Loop through the playlist automatically
+- Switch scenes, manage audio ducking, and cycle media sources
 
-```bash
-python start_services.py --launch
-```
+### How Scene Switching Works
 
-**To launch a specific service:**
+1. **RadioFlow** reads `playlist.json` and executes scenes sequentially
+2. For each scene, it looks up the definition in `schedule.json`
+3. News/Music services update `schedule.json` with generated content paths
+4. When a scene with `duration: null` is reached, it waits for audio to complete
+5. The playlist loops forever
 
-```bash
-python start_services.py --launch <service-name>
-```
-
-**To launch multiple specific services:**
-
-```bash
-python start_services.py --launch <service-name1> <service-name2> ...
-```
-
-**Note**: If the `python` command is not found, use `python3` instead.
-
-For example, to launch the OBS service:
-
-```bash
-python start_services.py --launch obs
-```
-
-To launch all services except music:
-
-```bash
-python start_services.py --launch youtube obs news api event_notifier
-```
-
-Available services: `youtube`, `obs`, `music`, `news`, `api`, `event_notifier`.
+**No manual intervention required** — the system is fully autonomous once launched.
 
 ### Managing Services
 
-The `start_services.py` script also allows you to stop and restart services:
-
--   **Stop all services**: `python start_services.py --stop`
--   **Stop a specific service**: `python start_services.py --stop <service-name>`
--   **Restart all services**: `python start_services.py --launch --force`
--   **Restart a specific service**: `python start_services.py --launch <service-name> --force`
-
-**Examples:**
 ```bash
-# Restart the YouTube service
-python start_services.py --launch youtube --force
+# Launch specific services
+python start_services.py --launch obs
 
-# Restart the OBS service
+# Stop all services
+python start_services.py --stop
+
+# Stop specific service
+python start_services.py --stop obs
+
+# Restart a service
 python start_services.py --launch obs --force
-
-# Restart the event_notifier service (useful after changing EVENT_WEBHOOK_URLS)
-python start_services.py --launch event_notifier --force
-
-# Restart multiple services
-python start_services.py --launch obs event_notifier --force
 ```
 
-**Note**: After changing configuration (like `EVENT_WEBHOOK_URLS` in `.env`), you need to restart the affected service(s) for changes to take effect.
+Available services: `youtube`, `obs`, `music`, `news`, `api`, `event_notifier`
 
-### Testing the Event Notifier Service
+---
 
-To test the event notifier service:
+## 📁 Media Directory Structure
 
-1. **Start the service**:
-   ```bash
-   python start_services.py --launch event_notifier
-   ```
-
-2. **Test the health endpoint**:
-   ```bash
-   curl http://127.0.0.1:8002/health
-   ```
-
-3. **Send a test event to the local event_notifier service** (which will forward it to configured webhooks):
-   ```bash
-   curl -X POST http://127.0.0.1:8002/events \
-     -H "Content-Type: application/json" \
-     -d '{
-       "event": "news_section_started",
-       "data": {
-         "scene": "ai_robotics_news",
-         "audio_file": "test.mp3",
-         "duration_seconds": 180.5
-       }
-     }'
-   ```
-   
-   This will forward the event to `https://your-hub.example.com/api/agents/generic/event` if configured in your `.env` file.
-
-4. **Test the webhook endpoint directly** (to verify the hub endpoint is working):
-   ```bash
-   curl -X POST https://your-hub.example.com/api/agents/generic/event \
-     -H "Content-Type: application/json" \
-     -d '{
-       "event": "news_section_started",
-       "timestamp": "2024-01-15T14:30:00Z",
-       "scene": "ai_robotics_news",
-       "audio_file": "test.mp3",
-       "duration_seconds": 180.5
-     }'
-   ```
-   
-   **Note**: This tests the external webhook endpoint directly. If you get a 404, verify the endpoint path is correct on the hub server.
-
-5. **Test with a webhook testing service** (like [webhook.site](https://webhook.site)):
-   - Get a unique webhook URL from webhook.site
-   - Add it to your `.env`: `EVENT_WEBHOOK_URLS=https://webhook.site/your-unique-id`
-   - Restart the service and send a test event to see it forwarded to your webhook
-
-## Media ##
-
-EchoBot uses a unified media structure to simplify content management. All media files are stored in a single host directory, which is mounted into the container at `/app/media`.
-
-### Directory Structure
+All media paths in `schedule.json` are relative to `MEDIA_HOST_DIR`:
 
 ```
-{PROJECT_ROOT}/app/media/
-├── news/
-├── voice/generated_audio/
-├── music/
-│   ├── soundcloud_songs/
-│   └── google_drive_songs/
-├── state/
-├── memory/
-└── videos/
+app/media/
+├── videos/              # Video files for scenes
+├── voice/
+│   └── generated_audio/ # Generated voiceovers
+├── music/               # Background music
+├── news/                # Generated news scripts
+├── state/               # Service state files
+└── memory/              # Agent memory
 ```
 
-### How It Works
 
-1.  **Host Directory**: All media is stored in `{PROJECT_ROOT}/app/media` on your local machine.
-2.  **Container Mount**: This directory is mounted to `/app/media` in the container.
-3.  **Path Conversion**: The application provides helper functions to convert between host and container paths, ensuring seamless integration with OBS.
+## ⚙️ Optional: Advanced Features
 
-## 🐛 Troubleshooting
+The following features require additional API keys and configuration. See `.example.env` for all available options.
 
-### Common Issues
+### 📰 News Generation Service
 
--   **Command 'python' not found**: If you see this error, use `python3` instead of `python`, or ensure your virtual environment is activated (run `source .venv/bin/activate`).
--   **ModuleNotFoundError when using `python -m start_services.py`**: Don't use `python -m` with the script. Run it directly as `python start_services.py` (or `python3 start_services.py`).
--   **OBS Connection Failed**: Ensure OBS is running and your WebSocket settings are correct.
--   **Container Can't Write Files**: Check that the `{PROJECT_ROOT}/app/media` directory has the correct permissions.
--   **Path Conversion Not Working**: Verify that `MEDIA_HOST_DIR` and `MEDIA_CONTAINER_DIR` are set correctly in your `.env` file.
+Generates AI news reports with voiceover. Requires:
+- ElevenLabs API key (voice generation)
+- LLM provider API key (script generation)
 
+### 🎵 Music Generation Service
 
-## Contributor Note
+Generates original music. Requires:
+- Suno API key or SoundCloud credentials
 
-This project is under active development.
-Community contributions are welcome via pull requests.
+### 💬 YouTube Chat Service
 
-## Setup Notes
+Enables live chat interaction. Requires:
+- YouTube API credentials
+- OAuth configuration
 
-Before running EchoBot:
-- Make sure Docker is installed
-- Copy `.example.env` to `.env`
-- Fill required API keys
+### 🔔 Event Notifier Service
+
+Forwards events to external webhooks for integration with your website or other services. Configure `EVENT_WEBHOOK_URLS` in `.env`.
