@@ -50,7 +50,9 @@ class EventClient:
                 response.raise_for_status()
                 logger.debug(f"✅ Event '{event_type}' sent to event notifier service")
             except requests.exceptions.Timeout:
-                logger.warning(f"⏱️ Timeout sending event '{event_type}' to event notifier service")
+                logger.warning(
+                    f"⏱️ Timeout sending event '{event_type}' to event notifier service"
+                )
             except requests.exceptions.RequestException as e:
                 logger.warning(
                     f"⚠️ Failed to send event '{event_type}' to event notifier service: {e}. "
@@ -95,4 +97,3 @@ def send_event(event_type: str, data: dict[str, Any] | None = None) -> None:
     """
     client = get_client()
     client.send_event(event_type, data)
-

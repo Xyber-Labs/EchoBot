@@ -1,7 +1,8 @@
 import os
 
-import config.config as _  # noqa
 from radio.core.flow import RadioFlow
+
+import config.config as _  # noqa
 
 os.environ.setdefault("RADIO_DISABLE_OBS", "1")
 

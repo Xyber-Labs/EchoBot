@@ -8,9 +8,10 @@ Usage:
     python scripts/check_media.py --info   # Detailed information
 """
 
-from radio.utils.media_manager import MediaDirectoryManager
 import sys
 from pathlib import Path
+
+from radio.utils.media_manager import MediaDirectoryManager
 
 # Add the project root to Python path
 project_root = Path(__file__).parent.parent

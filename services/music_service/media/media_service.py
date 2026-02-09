@@ -2,15 +2,17 @@
 This service is used for loading songs from soundcloud and loading videos from the googledrive
 """
 
+import os
+import sys
+import time
+from pathlib import Path
+
+import schedule
+
 from app_logging.logger import logger
 from config.config import Settings, to_system_path
-import os
-import schedule
 from services.music_service.media.load_songs_soundcloud import Soundcloud
 from video.video_load import main as load_videos_from_google_drive
-import time
-import sys
-from pathlib import Path
 
 
 class MediaInitializationService:
@@ -75,7 +77,9 @@ class MediaInitializationService:
             soundcloud_downloader.download_songs()
         except Exception as e:
             logger.warning(f"Error loading songs from soundcloud: {e}")
-            logger.warning("Skipping SoundCloud initialization - not configured. You can add local music files to app/media/music/ instead.")
+            logger.warning(
+                "Skipping SoundCloud initialization - not configured. You can add local music files to app/media/music/ instead."
+            )
 
     def load_videos_from_googledrive(self):
         logger.info("Loading videos from googledrive")
@@ -83,7 +87,9 @@ class MediaInitializationService:
             load_videos_from_google_drive()
         except Exception as e:
             logger.warning(f"Error loading videos from googledrive: {e}")
-            logger.warning("Skipping Google Drive initialization - not configured. You can add local video files to app/media/videos/ instead.")
+            logger.warning(
+                "Skipping Google Drive initialization - not configured. You can add local video files to app/media/videos/ instead."
+            )
 
     def set_schedule_for_soundcloud_downloader(self):
         logger.info("Setting schedule for soundcloud downloader")

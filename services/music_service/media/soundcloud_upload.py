@@ -3,12 +3,14 @@ This script is used to upload songs to SoundCloud.
 It also handles token refresh and ensures the track and playlist are public for successful addition.
 """
 
-import requests
+import json
 import os
 import time
-from config.config import Settings
+
+import requests
+
 from app_logging.logger import logger
-import json
+from config.config import Settings
 
 settings = Settings()
 
@@ -25,9 +27,11 @@ class SoundCloudUploader:
         self.client_id = settings.soundcloud.SOUNDCLOUD_CLIENT_ID
         self.client_secret = settings.soundcloud.SOUNDCLOUD_CLIENT_SECRET
         self.access_token = settings.soundcloud.SOUNDCLOUD_ACCESS_TOKEN
-        
+
         # Dynamically build the path to the token file
-        self.token_path = settings.media.media_root_dir / "config" / "soundcloud_refresh_token.json"
+        self.token_path = (
+            settings.media.media_root_dir / "config" / "soundcloud_refresh_token.json"
+        )
         # Force loading the token ONLY from the JSON file, ignoring any environment variables
         self.refresh_token = self._load_refresh_token()
 
@@ -48,7 +52,9 @@ class SoundCloudUploader:
             with open(self.token_path, "r") as f:
                 token_data = json.load(f)
             token = token_data.get("SOUNDCLOUD_REFRESH_TOKEN")
-            logger.info(f"DEBUG: Successfully loaded refresh token from {self.token_path}. Token: {token}")
+            logger.info(
+                f"DEBUG: Successfully loaded refresh token from {self.token_path}. Token: {token}"
+            )
             return token
         except (json.JSONDecodeError, Exception) as e:
             logger.error(f"Error reading refresh token from {self.token_path}: {e}")

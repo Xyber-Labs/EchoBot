@@ -3,10 +3,10 @@ from __future__ import annotations
 import argparse
 from time import sleep
 
+from app_logging.logger import logger
 from config.config import settings
 from services.obs_stream_service.services.obs_service import OBSService
 from services.obs_stream_service.services.subscene_cycler import SubsceneCycler
-from app_logging.logger import logger
 
 # --- Configuration ---
 SCENE_NAME = "Scene-Music"

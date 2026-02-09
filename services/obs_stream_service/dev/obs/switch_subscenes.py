@@ -23,9 +23,9 @@ Or import and control from your main flow:
 
 from time import sleep
 
+from app_logging.logger import logger
 from config.config import settings
 from services.obs_stream_service.services.obs_service import OBSService
-from app_logging.logger import logger
 
 DURATION_SECONDS = 3
 SUBSCENES: list[str] = [

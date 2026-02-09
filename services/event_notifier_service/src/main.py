@@ -35,14 +35,20 @@ def initialize_event_handler() -> None:
 
     if webhook_urls_str:
         # Parse comma-separated URLs
-        webhook_urls = [url.strip() for url in webhook_urls_str.split(",") if url.strip()]
+        webhook_urls = [
+            url.strip() for url in webhook_urls_str.split(",") if url.strip()
+        ]
 
     if webhook_urls:
-        logger.info(f"Initializing event handler with {len(webhook_urls)} webhook URL(s)")
+        logger.info(
+            f"Initializing event handler with {len(webhook_urls)} webhook URL(s)"
+        )
         for url in webhook_urls:
             logger.info(f"  - {url}")
     else:
-        logger.warning("No webhook URLs configured. Events will be logged but not forwarded.")
+        logger.warning(
+            "No webhook URLs configured. Events will be logged but not forwarded."
+        )
 
     event_handler = EventHandler(webhook_urls=webhook_urls)
 
@@ -87,16 +93,18 @@ async def receive_event(request: EventRequest) -> JSONResponse:
         logger.info(f"📥 Received event: {request.event}")
         if request.data:
             logger.debug(f"   Event data: {request.data}")
-        
+
         event_handler.forward_event(
             event_type=request.event,
             data=request.data,
             retry_count=2,  # Retry failed webhooks once
         )
-        
+
         webhook_count = len(event_handler.webhook_urls) if event_handler else 0
-        logger.info(f"✅ Event '{request.event}' processed. Forwarded to {webhook_count} webhook(s)")
-        
+        logger.info(
+            f"✅ Event '{request.event}' processed. Forwarded to {webhook_count} webhook(s)"
+        )
+
         return JSONResponse(
             {"ok": True, "event": request.event, "forwarded_to": webhook_count}
         )
@@ -138,7 +146,9 @@ def main() -> None:
     args = parser.parse_args()
 
     logger.info(f"Starting Event Notifier Service on {args.host}:{args.port}")
-    logger.info(f"Webhook URLs configured: {len(event_handler.webhook_urls) if event_handler else 0}")
+    logger.info(
+        f"Webhook URLs configured: {len(event_handler.webhook_urls) if event_handler else 0}"
+    )
 
     import uvicorn
 
@@ -153,4 +163,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

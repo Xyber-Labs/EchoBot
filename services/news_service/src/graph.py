@@ -1,40 +1,26 @@
 import asyncio
+import concurrent.futures
 import json
+import os
 from datetime import datetime
 from typing import List, Union
-import concurrent.futures
 
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import StructuredTool, Tool
 from langgraph.graph import END, START, StateGraph
 from typing_extensions import Literal
-from app_logging.logger import logger
-import os
 
+from app_logging.logger import logger
+from LLM import (clean_apify_tweet_data, clean_for_voice, clean_response,
+                 create_mcp_tasks, extract_source_info, format_sources,
+                 get_telegram_sources_for_topic, get_twitter_sources_for_topic)
 from services.news_service.src.prompts import (
-    get_current_date,
-    news_article_instructions,
-    query_writer_instructions,
-    summarise_web_research_results_instructions,
-    validate_news_article_instructions,
-    is_summary_good_prompt,
-)
-from services.news_service.src.state import (
-    SummaryState,
-    SummaryStateInput,
-    SummaryStateOutput,
-)
-from LLM import (
-    clean_apify_tweet_data,
-    clean_for_voice,
-    clean_response,
-    create_mcp_tasks,
-    extract_source_info,
-    format_sources,
-    get_twitter_sources_for_topic,
-    get_telegram_sources_for_topic,
-)
+    get_current_date, is_summary_good_prompt, news_article_instructions,
+    query_writer_instructions, summarise_web_research_results_instructions,
+    validate_news_article_instructions)
+from services.news_service.src.state import (SummaryState, SummaryStateInput,
+                                             SummaryStateOutput)
 
 
 # Nodes

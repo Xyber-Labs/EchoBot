@@ -1,19 +1,18 @@
-from langgraph.graph import END, START, StateGraph
-from services.music_service.music_agent.state import MusicGenerationState
-from services.music_service.music_agent.music_generation_prompt import (
-    MUSIC_GENERATION_PROMPT,
-    MUSIC_VALIDATION_PROMPT,
-)
-from LLM import clean_response
-from langchain_core.output_parsers import JsonOutputParser
-from config.config import Settings
-from services.music_service.music_agent.sunoapi import generate_song_suno
-from app_logging.logger import logger
-from services.music_service.media.soundcloud_upload import SoundCloudUploader
-
 import json
-from datetime import datetime
 import os
+from datetime import datetime
+
+from langchain_core.output_parsers import JsonOutputParser
+from langgraph.graph import END, START, StateGraph
+
+from app_logging.logger import logger
+from config.config import Settings
+from LLM import clean_response
+from services.music_service.media.soundcloud_upload import SoundCloudUploader
+from services.music_service.music_agent.music_generation_prompt import (
+    MUSIC_GENERATION_PROMPT, MUSIC_VALIDATION_PROMPT)
+from services.music_service.music_agent.state import MusicGenerationState
+from services.music_service.music_agent.sunoapi import generate_song_suno
 
 
 class MusicGeneration:

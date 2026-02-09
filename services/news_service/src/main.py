@@ -1,36 +1,30 @@
 #!/usr/bin/env python
 import asyncio
-import sys
 import os
-import schedule
+import sys
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
 
+import schedule
+from langchain_mcp_adapters.client import MultiServerMCPClient
 from mutagen.mp3 import MP3
+
+from app_logging.logger import logger
+from config.config import MediaSettings, Settings
+from LLM import (initialize_llm, load_agent_personality, load_json,
+                 load_mcp_servers_config, load_news_memory, save_news_memory)
+from services.news_service.src.graph import NewsGenerator
+from services.obs_stream_service.services.schedule_updater import \
+    update_scene_audio_path_in_schedule
+from services.obs_stream_service.utils.media import get_latest_audio_file
+from voice.generate import generate_voice
 
 # Removed unused typing imports
 
-from langchain_mcp_adapters.client import MultiServerMCPClient
-from config.config import MediaSettings, Settings
-from app_logging.logger import logger
-from services.obs_stream_service.services.schedule_updater import (
-    update_scene_audio_path_in_schedule,
-)
-from services.obs_stream_service.utils.media import get_latest_audio_file
-
-from services.news_service.src.graph import NewsGenerator
-from LLM import (
-    load_agent_personality,
-    load_mcp_servers_config,
-    load_news_memory,
-    save_news_memory,
-    load_json,
-    initialize_llm,
-)
 
 
-from voice.generate import generate_voice
+
 
 
 # Create a global asyncio Event to signal shutdown
@@ -356,7 +350,6 @@ def update_schedule_with_cached_audio(topic: str, audio_file_path: str) -> None:
 
 
 async def generate_news_for_ai_robotics(force: bool = False):
-
     if force:
         logger.info("Force mode: Bypassing cache check for AI_Robotics news...")
     else:

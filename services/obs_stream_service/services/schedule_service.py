@@ -6,11 +6,10 @@ import json
 from pathlib import Path
 from typing import Any
 
-from services.obs_stream_service.utils.async_tools import with_retry
 from app_logging.logger import logger
-from services.obs_stream_service.utils.video import update_current_scene
 from config.config import settings
-
+from services.obs_stream_service.utils.async_tools import with_retry
+from services.obs_stream_service.utils.video import update_current_scene
 
 SCHEDULE_PATH = settings.agent.SCHEDULE_PATH
 

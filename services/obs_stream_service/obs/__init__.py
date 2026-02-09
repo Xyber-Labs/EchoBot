@@ -3,18 +3,13 @@ import os
 import sys
 import time
 
-
 # Load environment variables from .env file
 from dotenv import load_dotenv
 from pydub import AudioSegment
+
 from app_logging.logger import logger
-
-from config.config import (
-    BACKGROUND_MUSIC_VOLUME_DUCKED,
-    BACKGROUND_MUSIC_VOLUME_NORMAL,
-    settings,
-)
-
+from config.config import (BACKGROUND_MUSIC_VOLUME_DUCKED,
+                           BACKGROUND_MUSIC_VOLUME_NORMAL, settings)
 from services.obs_stream_service.obs.ClientManager import OBSClientManager
 
 load_dotenv()
@@ -858,7 +853,7 @@ def get_audio_duration_seconds(file_path: str) -> float:
     """Get the duration of an audio file in seconds using pydub."""
     import json
     import subprocess
-    
+
     try:
         if not os.path.exists(file_path):
             logger.error(f"Audio file not found: {file_path}")
@@ -1100,10 +1095,8 @@ def match_video_duration_to_audio(
 
         # Method 1: Try moviepy (most user-friendly)
         try:
-            from moviepy.editor import (  # type: ignore
-                VideoFileClip,
-                concatenate_videoclips,
-            )
+            from moviepy.editor import (VideoFileClip,  # type: ignore
+                                        concatenate_videoclips)
 
             with VideoFileClip(video_file_path) as video:
                 original_duration = video.duration
@@ -1213,9 +1206,7 @@ def match_video_duration_to_audio(
                 )
 
                 # Create input streams for seamless looping
-                inputs = [
-                    ffmpeg.input(video_file_path) for _ in range(loops_needed)
-                ]  # type: ignore
+                inputs = [ffmpeg.input(video_file_path) for _ in range(loops_needed)]  # type: ignore
                 concatenated = ffmpeg.concat(*inputs, v=1, a=1)  # type: ignore
                 output = ffmpeg.output(
                     concatenated, output_video_path, t=target_duration
@@ -1699,7 +1690,9 @@ def hide_source_in_scene(scene_name: str, source_name: str) -> bool:
         # Get the scene item ID
         scene_item_id = cl.get_scene_item_id(scene_name, source_name)
         if not scene_item_id or not hasattr(scene_item_id, "scene_item_id"):
-            logging.debug(f"Source '{source_name}' not found in scene '{scene_name}' (this is normal when switching locations)")
+            logging.debug(
+                f"Source '{source_name}' not found in scene '{scene_name}' (this is normal when switching locations)"
+            )
             return False
 
         item_id = scene_item_id.scene_item_id  # type:ignore
@@ -1713,9 +1706,13 @@ def hide_source_in_scene(scene_name: str, source_name: str) -> bool:
         # Check if it's a "source not found" error (code 600)
         error_msg = str(e)
         if "code 600" in error_msg or "No scene items were found" in error_msg:
-            logging.debug(f"Source '{source_name}' not found in scene '{scene_name}' (this is normal when switching locations): {e}")
+            logging.debug(
+                f"Source '{source_name}' not found in scene '{scene_name}' (this is normal when switching locations): {e}"
+            )
         else:
-            logging.warning(f"Failed to hide source '{source_name}' in scene '{scene_name}': {e}")
+            logging.warning(
+                f"Failed to hide source '{source_name}' in scene '{scene_name}': {e}"
+            )
         return False
 
 

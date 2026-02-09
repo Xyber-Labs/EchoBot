@@ -2,9 +2,10 @@
 Suno api for generating songs
 """
 
-import requests
-import time
 import sys
+import time
+
+import requests
 
 from app_logging.logger import logger
 
@@ -114,14 +115,12 @@ def generate_song_suno(
 
                                                 # Stream the download to avoid memory issues
                                                 with open(filepath, "wb") as f:
-                                                    for (
-                                                        chunk
-                                                    ) in audio_get_response.iter_content(
-                                                        chunk_size=8192
+                                                    for chunk in (
+                                                        audio_get_response.iter_content(
+                                                            chunk_size=8192
+                                                        )
                                                     ):
-                                                        if (
-                                                            chunk
-                                                        ):  # filter out keep-alive new chunks
+                                                        if chunk:  # filter out keep-alive new chunks
                                                             f.write(chunk)
 
                                                 logger.info(

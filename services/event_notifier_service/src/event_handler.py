@@ -23,9 +23,13 @@ class EventHandler:
         """
         self.webhook_urls = webhook_urls or []
         self.webhook_urls = [url.strip() for url in self.webhook_urls if url.strip()]
-        logger.info(f"Event handler initialized with {len(self.webhook_urls)} webhook URL(s)")
+        logger.info(
+            f"Event handler initialized with {len(self.webhook_urls)} webhook URL(s)"
+        )
 
-    def _send_webhook_sync(self, url: str, payload: dict[str, Any], timeout: int = 5) -> bool:
+    def _send_webhook_sync(
+        self, url: str, payload: dict[str, Any], timeout: int = 5
+    ) -> bool:
         """
         Send webhook synchronously (called from thread).
 
@@ -79,7 +83,9 @@ class EventHandler:
         if data:
             payload.update(data)
 
-        logger.info(f"📤 Forwarding event '{event_type}' to {len(self.webhook_urls)} webhook(s)")
+        logger.info(
+            f"📤 Forwarding event '{event_type}' to {len(self.webhook_urls)} webhook(s)"
+        )
         for idx, url in enumerate(self.webhook_urls, 1):
             logger.info(f"  [{idx}/{len(self.webhook_urls)}] → {url}")
 
@@ -94,12 +100,14 @@ class EventHandler:
                 # Retry logic
                 if not success and retry_count > 1:
                     for attempt in range(1, retry_count):
-                        logger.info(f"🔄 Retrying webhook {url} (attempt {attempt + 1}/{retry_count})")
+                        logger.info(
+                            f"🔄 Retrying webhook {url} (attempt {attempt + 1}/{retry_count})"
+                        )
                         import time
+
                         time.sleep(1)  # Simple delay between retries
                         if self._send_webhook_sync(url, payload):
                             break
 
             thread = threading.Thread(target=send_in_thread, daemon=True)
             thread.start()
-

@@ -1,9 +1,11 @@
-from pathlib import Path
 import os
-from dotenv import load_dotenv, find_dotenv
-from config.config import Settings
+from pathlib import Path
+
+from dotenv import find_dotenv, load_dotenv
 from radio.dev.obs.switch_media_sources import run_media_source_cycler_for
 from radio.services.obs_service import OBSService
+
+from config.config import Settings
 
 # Resolve project root relative to this file and try loading .env from there first
 PROJECT_ROOT = Path(__file__).resolve().parents[3]

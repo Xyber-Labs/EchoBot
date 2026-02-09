@@ -2,12 +2,13 @@
 """
 This is the main script that controls OBS Stream Service.
 """
-import asyncio
-from config.config import Settings
-from services.obs_stream_service.core.flow import RadioFlow
-from app_logging.logger import logger
-from services.music_service.media.media_service import initialize_media_once
 
+import asyncio
+
+from app_logging.logger import logger
+from config.config import Settings
+from services.music_service.media.media_service import initialize_media_once
+from services.obs_stream_service.core.flow import RadioFlow
 
 settings = Settings()
 

@@ -5,7 +5,9 @@ import os
 try:
     from dotenv import load_dotenv
 
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+    project_root = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "..", "..")
+    )
     dotenv_path = os.path.join(project_root, ".env")
     if os.path.exists(dotenv_path):
         load_dotenv(dotenv_path=dotenv_path)
@@ -17,15 +19,12 @@ except ImportError:
     print("WARNING: python-dotenv not installed, .env file will not be loaded.")
 
 
-from services.obs_stream_service.obs import (
-    create_or_update_audio_source,
-    create_or_update_video_source_centered,
-    create_scene,
-    scene_exists,
-    init_background_music,
-)
-from services.obs_stream_service.services.schedule_service import ScheduleService
 from config.config import settings
+from services.obs_stream_service.obs import (
+    create_or_update_audio_source, create_or_update_video_source_centered,
+    create_scene, init_background_music, scene_exists)
+from services.obs_stream_service.services.schedule_service import \
+    ScheduleService
 
 
 def setup_obs_environment():

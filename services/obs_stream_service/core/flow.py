@@ -1,33 +1,27 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import os
 import signal
 import sys
 from typing import Any
-import json
-
 
 import services.obs_stream_service.services.log_pusher as log_pusher
-from config.config import Settings
-from services.obs_stream_service.obs import (
-    get_audio_duration_seconds,
-    update_audio_source_file,
-    smooth_duck_background_music,
-    smooth_restore_background_music,
-)
-from services.obs_stream_service.services.obs_service import OBSService
-from services.obs_stream_service.services.schedule_service import ScheduleService
-from services.obs_stream_service.services.subscene_cycler import SubsceneCycler
-from services.obs_stream_service.core.ama_section import (
-    load_answered_messages,
-    generate_ama_voice,
-)
 from app_logging.logger import logger
-from config.config import to_container_path, to_system_path
-from services.obs_stream_service.utils.media import get_latest_audio_file
+from config.config import Settings, to_container_path, to_system_path
 from services.event_notifier_service.src.event_client import send_event
-
+from services.obs_stream_service.core.ama_section import (
+    generate_ama_voice, load_answered_messages)
+from services.obs_stream_service.obs import (get_audio_duration_seconds,
+                                             smooth_duck_background_music,
+                                             smooth_restore_background_music,
+                                             update_audio_source_file)
+from services.obs_stream_service.services.obs_service import OBSService
+from services.obs_stream_service.services.schedule_service import \
+    ScheduleService
+from services.obs_stream_service.services.subscene_cycler import SubsceneCycler
+from services.obs_stream_service.utils.media import get_latest_audio_file
 
 # Global variables for location-based DJ scenes
 DJ_TOTAL_DURATION = 1800  # 30 minutes total (global control)
@@ -35,28 +29,29 @@ DJ_LOCATION_SWITCH_DURATION = 30  # 30 seconds per location
 # DJ_TOTAL_DURATION = 300  # 10 minutes for dev/testing
 # DJ_LOCATION_SWITCH_DURATION = 30  # 30 seconds per location for dev/testing
 
+
 def load_playlist(dj_duration_override: int | None = None):
-    playlist_path = os.path.join(os.path.dirname(__file__), 'playlist.json')
-    with open(playlist_path, 'r') as f:
+    playlist_path = os.path.join(os.path.dirname(__file__), "playlist.json")
+    with open(playlist_path, "r") as f:
         data = json.load(f)
 
-    variables = data.get('variables', {})
+    variables = data.get("variables", {})
     if dj_duration_override is not None:
-        variables['dj_duration'] = dj_duration_override
-    playlist = data.get('playlist', [])
+        variables["dj_duration"] = dj_duration_override
+    playlist = data.get("playlist", [])
 
     # Substitute variables
     for item in playlist:
-        duration = item.get('duration')
-        if isinstance(duration, str) and duration.startswith('$'):
+        duration = item.get("duration")
+        if isinstance(duration, str) and duration.startswith("$"):
             var_name = duration[1:]
             if var_name in variables:
-                item['duration'] = variables[var_name]
+                item["duration"] = variables[var_name]
 
     return playlist
 
-PLAYLIST = load_playlist(dj_duration_override=DJ_TOTAL_DURATION)
 
+PLAYLIST = load_playlist(dj_duration_override=DJ_TOTAL_DURATION)
 
 
 class RadioFlow:
@@ -182,7 +177,9 @@ class RadioFlow:
                         },
                     )
             except Exception as e:
-                logger.warning(f"Failed to send event notification for {scene_name}: {e}")
+                logger.warning(
+                    f"Failed to send event notification for {scene_name}: {e}"
+                )
         elif scene_name == "web3_news":
             self.log_pusher.push(
                 f"Agent: Switching to '{scene_name}'. 📰 Web3 pulse check—let's decode the decentralized frontier."
@@ -201,7 +198,9 @@ class RadioFlow:
                         },
                     )
             except Exception as e:
-                logger.warning(f"Failed to send event notification for {scene_name}: {e}")
+                logger.warning(
+                    f"Failed to send event notification for {scene_name}: {e}"
+                )
         else:
             self.log_pusher.push(
                 f"Agent: Switching to '{scene_name}'. Settling in—let's enjoy this moment together."
@@ -209,11 +208,13 @@ class RadioFlow:
 
         # Check if this scene has location_config for multi-location DJ scenes
         location_config = item.get("location_config")
-        
+
         if location_config:
             # For location-based scenes, skip the initial scene switch
             # The location cycler will handle scene switching internally
-            logger.debug(f"Skipping initial scene switch for '{scene_name}' - location cycler will handle it")
+            logger.debug(
+                f"Skipping initial scene switch for '{scene_name}' - location cycler will handle it"
+            )
         else:
             # Duck BGM if the scene has its own audio
             if current_scene.get("has_audio", False):
@@ -239,13 +240,15 @@ class RadioFlow:
                     )
                 except Exception as e:
                     logger.error(f"❌ Failed to update Voice_Music_Source: {e}")
-        
+
         if location_config:
             # Multi-location cycling mode
             locations = location_config.get("locations", [])
             # Prioritize dev setting over playlist.json config
             # If dev setting differs from production default (300), use dev setting
-            playlist_location_duration = location_config.get("location_switch_duration", DJ_LOCATION_SWITCH_DURATION)
+            playlist_location_duration = location_config.get(
+                "location_switch_duration", DJ_LOCATION_SWITCH_DURATION
+            )
             if DJ_LOCATION_SWITCH_DURATION != 300:
                 # Dev/testing mode: use dev setting, ignore playlist.json
                 location_switch_duration = DJ_LOCATION_SWITCH_DURATION
@@ -256,26 +259,26 @@ class RadioFlow:
             else:
                 # Production mode: use playlist.json value (or default)
                 location_switch_duration = playlist_location_duration
-            
+
             media_source_cycle_duration = item.get("media_source_cycle", {}).get(
                 "duration", 10.0
             )
-            
+
             # Use global total duration
             total_duration = DJ_TOTAL_DURATION
-            
+
             # Warn if location duration is too long
             if location_switch_duration >= total_duration:
                 logger.warning(
                     f"⚠️ location_switch_duration ({location_switch_duration}s) >= total_duration ({total_duration}s). "
                     f"Only one location will be shown!"
                 )
-            
+
             logger.info(
                 f"Starting location-based DJ cycling: {len(locations)} locations, "
                 f"{total_duration}s total, {location_switch_duration}s per location"
             )
-            
+
             # Start location cycler (handles both location and video switching)
             self.subscene_cycler.start_location_cycling(
                 locations=locations,
@@ -283,21 +286,29 @@ class RadioFlow:
                 location_switch_duration=location_switch_duration,
                 media_source_cycle_duration=float(media_source_cycle_duration),
             )
-            
+
             # Wait for the location cycler to complete its total duration
-            logger.info(f"Waiting for location cycling to complete ({total_duration}s)...")
+            logger.info(
+                f"Waiting for location cycling to complete ({total_duration}s)..."
+            )
             # Wait for the full duration, regardless of cycler state
             # The cycler will stop itself when total_duration is reached
             await self._interruptible_sleep(total_duration)
-            logger.info(f"Location cycling wait completed ({total_duration}s), stopping cycler...")
+            logger.info(
+                f"Location cycling wait completed ({total_duration}s), stopping cycler..."
+            )
             # Stop the cycler explicitly to ensure cleanup
             self.subscene_cycler.stop(timeout=0.5)
             sleep_some_time = False  # Already waited, don't sleep again
             duration = None  # Duration already handled, don't set it again
-            logger.debug(f"Location cycling complete for '{scene_name}', continuing to next playlist item...")
+            logger.debug(
+                f"Location cycling complete for '{scene_name}', continuing to next playlist item..."
+            )
         else:
             # Original media source cycling mode (backward compatible)
-            media_sources = item.get("media_sources") or current_scene.get("media_sources")
+            media_sources = item.get("media_sources") or current_scene.get(
+                "media_sources"
+            )
 
             if media_sources:
                 # --- FIX: Exclude BGM sources from the cycler's control ---
@@ -312,7 +323,9 @@ class RadioFlow:
                     media_sources=filtered_media_sources,
                     duration=float(cycle_cfg.get("duration", 10.0)),
                     poll_interval=float(
-                        cycle_cfg.get("poll_interval", SubsceneCycler.DEFAULT_POLL_INTERVAL)
+                        cycle_cfg.get(
+                            "poll_interval", SubsceneCycler.DEFAULT_POLL_INTERVAL
+                        )
                     ),
                 )
 
@@ -388,7 +401,7 @@ class RadioFlow:
         # Only set duration for non-location scenes
         if not location_config:
             duration = item.get("duration")
-        
+
         # Skip duration calculation if already set (location-based scenes)
         if duration is None and not location_config:
             # For news scenes, use the actual audio file being played
@@ -438,7 +451,7 @@ class RadioFlow:
 
         if current_scene.get("has_audio", False):
             smooth_restore_background_music()
-        
+
         logger.debug(f"Finished processing scene '{scene_name}', function returning...")
 
     # ---------- Helpers ---------- #
@@ -476,13 +489,16 @@ def _setup_sigint(runner: RadioFlow) -> None:
     if sys.platform != "win32":
         try:
             loop = asyncio.get_running_loop()
+
             def handle_signal(sig):
                 logger.info(f"Received signal {sig.name}, shutting down gracefully...")
                 runner._running = False
-            
+
             for sig in (signal.SIGINT, signal.SIGTERM):
                 loop.add_signal_handler(sig, lambda s=sig: handle_signal(s))
             logger.debug("Signal handlers registered for SIGINT and SIGTERM")
         except RuntimeError:
             # No running loop yet, will be set up later
-            logger.debug("No running event loop yet, signal handlers will be set up later")
+            logger.debug(
+                "No running event loop yet, signal handlers will be set up later"
+            )

@@ -1,6 +1,6 @@
 import argparse
-import subprocess
 import os
+import subprocess
 import sys
 
 SERVICES: dict[str, str] = {

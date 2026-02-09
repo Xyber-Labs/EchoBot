@@ -1,6 +1,8 @@
 from __future__ import annotations
+
 from typing import Optional
-from fastapi import APIRouter, Request, status, HTTPException, Query
+
+from fastapi import APIRouter, HTTPException, Query, Request, status
 from pydantic import BaseModel, Field
 
 from services.chat_youtube_service.src.chat_module import ChatService

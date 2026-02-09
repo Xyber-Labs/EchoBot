@@ -4,9 +4,8 @@ from typing import Optional
 
 import obsws_python as obs
 
-from config.config import OBSSettings as ObsSettings
-
 from app_logging.logger import logger
+from config.config import OBSSettings as ObsSettings
 
 
 class OBSClientManager:

@@ -5,13 +5,8 @@ from pathlib import Path
 from typing import AsyncGenerator
 
 from fastapi import FastAPI, Request, Response
-from fastapi.responses import (
-    FileResponse,
-    HTMLResponse,
-    JSONResponse,
-    PlainTextResponse,
-    StreamingResponse,
-)
+from fastapi.responses import (FileResponse, HTMLResponse, JSONResponse,
+                               PlainTextResponse, StreamingResponse)
 
 app = FastAPI()
 
@@ -84,7 +79,9 @@ async def stream() -> StreamingResponse:
         "X-Accel-Buffering": "no",  # disable Nginx buffering for streaming
     }
     return StreamingResponse(
-        event_gen(), media_type="text/event-stream", headers=headers  # type: ignore
+        event_gen(),
+        media_type="text/event-stream",
+        headers=headers,  # type: ignore
     )
 
 
@@ -126,8 +123,9 @@ async def post_log(request: Request) -> Response:
 
 
 if __name__ == "__main__":
-    import uvicorn
     import argparse
+
+    import uvicorn
 
     parser = argparse.ArgumentParser(description="Run EchoBot Log API")
     parser.add_argument(
