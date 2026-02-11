@@ -7,14 +7,16 @@ Uri example:
 https://soundcloud.com/connect?client_id=CLIENT_ID&redirect_uri=http://localhost&response_type=code
 """
 
-import requests
 import json
 
+import requests
 
-CLIENT_SECRET = ""  # Your cliend secret from settings.soundcloud.SOUNDCLOUD_CLIENT_SECRET
+CLIENT_SECRET = (
+    ""  # Your cliend secret from settings.soundcloud.SOUNDCLOUD_CLIENT_SECRET
+)
 
-#Compose the uri example about with this client id and redirect uri
-#uri = f"https://soundcloud.com/connect?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code"
+# Compose the uri example about with this client id and redirect uri
+# uri = f"https://soundcloud.com/connect?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code"
 # 2. Go to the AUTH_URL, authorize, and get the NEW code from the redirect URL.
 #    It must be a fresh code you get right before running this script.
 # Get it from the redirect uri

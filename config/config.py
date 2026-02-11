@@ -2,15 +2,13 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Optional, Literal
-from app_logging.logger import logger
+from typing import Literal, Optional
+
 from google.oauth2.credentials import Credentials
 from pydantic import Field, computed_field
-from pydantic_settings import (
-    BaseSettings,
-    SettingsConfigDict,
-)
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from app_logging.logger import logger
 
 # Define the path to the root .env file to ensure consistent loading
 _project_root = Path(__file__).resolve().parent.parent
@@ -106,18 +104,10 @@ class LLMSettings(BaseSettings):
     MODEL_NAME: str = Field(default="gemini-2.5-flash")
     MODEL_PROVIDER_SPARE: str = Field(default="together")
     MODEL_NAME_SPARE: str = Field(default="deepseek-ai/DeepSeek-V3")
-    MODEL_PROVIDER_THINKING: Optional[str] = Field(
-        default="google"
-    )
-    MODEL_NAME_THINKING: Optional[str] = Field(
-        default="gemini-2.5-pro"
-    )
-    MODEL_VALIDATION_PROVIDER: Optional[str] = Field(
-        default="google"
-    )
-    MODEL_VALIDATION_NAME: Optional[str] = Field(
-        default="gemini-2.0-flash"
-    )
+    MODEL_PROVIDER_THINKING: Optional[str] = Field(default="google")
+    MODEL_NAME_THINKING: Optional[str] = Field(default="gemini-2.5-pro")
+    MODEL_VALIDATION_PROVIDER: Optional[str] = Field(default="google")
+    MODEL_VALIDATION_NAME: Optional[str] = Field(default="gemini-2.0-flash")
 
     model_config = SettingsConfigDict(
         env_file=_env_file, env_file_encoding="utf-8", extra="ignore"
@@ -313,9 +303,6 @@ class AgentConfig(BaseSettings):
     )
 
 
-
-
-
 class EventNotifierSettings(BaseSettings):
     """Settings for the event notifier service."""
 
@@ -341,14 +328,11 @@ def to_system_path(settings: Settings, container_path: str) -> str:
     if host_root and container_root:
         p = str(container_path)
         if p.startswith(container_root):
-            return (str(host_root) + p[len(container_root) :]).replace(
-                "\\", "/"
-            )  # noqa
+            return (str(host_root) + p[len(container_root) :]).replace("\\", "/")  # noqa
     return container_path
 
 
 class Settings(BaseSettings):
-
     # API Keys
     GOOGLE_API_KEY: str | None = Field(default=None, env="GOOGLE_API_KEY")
     TAVILY_API_KEY: str | None = Field(default=None, env="TAVILY_API_KEY")

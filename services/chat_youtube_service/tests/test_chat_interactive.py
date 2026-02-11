@@ -1,20 +1,21 @@
 # This is the test script for testing the youtube interface chat functional
 from __future__ import annotations
+
 import asyncio
 import json
 import sys
 from pathlib import Path
 
+import services.obs_stream_service.services.log_pusher as log_pusher
+from app_logging.logger import logger
 from config.config import Settings
 from LLM import initialize_llm
-import services.obs_stream_service.services.log_pusher as log_pusher
+from services.chat_youtube_service.src.agent.graph import \
+    Youtube_Responder_Agent
 from services.chat_youtube_service.src.chat_module import ChatService
-from services.obs_stream_service.services.schedule_service import ScheduleService
-from services.chat_youtube_service.src.agent.graph import Youtube_Responder_Agent
-from services.chat_youtube_service.src.youtube.module import (
-    get_youtube_client,
-)
-from app_logging.logger import logger
+from services.chat_youtube_service.src.youtube.module import get_youtube_client
+from services.obs_stream_service.services.schedule_service import \
+    ScheduleService
 
 # Add project root to path to allow imports from other modules
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent.parent))
@@ -25,7 +26,6 @@ project_root = Path(__file__).resolve().parent.parent.parent
 # lets initialise the LLMs
 logger.info("Loading configuration...")
 try:
-
     settings = Settings()
     logger.info("Configuration loaded.")
 except Exception as e:

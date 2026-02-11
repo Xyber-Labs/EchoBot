@@ -5,7 +5,9 @@ import os
 try:
     from dotenv import load_dotenv
 
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    project_root = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "..", "..")
+    )
     dotenv_path = os.path.join(project_root, ".env")
     if os.path.exists(dotenv_path):
         load_dotenv(dotenv_path=dotenv_path)
@@ -17,14 +19,12 @@ except ImportError:
     print("WARNING: python-dotenv not installed, .env file will not be loaded.")
 
 
-from radio.obs import (
-    create_or_update_audio_source,
-    create_or_update_video_source_centered,
-    create_scene,
-    scene_exists,
-    start_background_music,
-)
-from radio.services.schedule_service import ScheduleService
+from config.config import settings
+from services.obs_stream_service.obs import (
+    create_or_update_audio_source, create_or_update_video_source_centered,
+    create_scene, init_background_music, scene_exists)
+from services.obs_stream_service.services.schedule_service import \
+    ScheduleService
 
 
 def setup_obs_environment():
@@ -33,6 +33,11 @@ def setup_obs_environment():
     live setup exactly matches the schedule.json file.
     """
     logging.info("=== OBS auto‑setup started ===")
+
+    # Get MEDIA_HOST_DIR from settings
+    media_root = settings.media.media_root_dir
+    logging.info(f"Using media root directory: {media_root}")
+
     schedule_service = ScheduleService()
     schedule = schedule_service.load()
     if not schedule:
@@ -58,35 +63,45 @@ def setup_obs_environment():
         if scene_name.startswith("_"):
             continue
 
-        if scene_data.get("video_path") and os.path.exists(scene_data["video_path"]):
-            create_or_update_video_source_centered(
-                scene_name=scene_data["scene_name"],
-                source_name=scene_data["video_source_name"],
-                file_path=scene_data["video_path"],
-                loop_video=scene_data["loop_video"],
-            )
+        # Resolve video path relative to media_root
+        video_path = scene_data.get("video_path")
+        if video_path:
+            full_video_path = os.path.join(media_root, video_path)
+            if os.path.exists(full_video_path):
+                create_or_update_video_source_centered(
+                    scene_name=scene_data["scene_name"],
+                    source_name=scene_data["video_source_name"],
+                    file_path=full_video_path,
+                    loop_video=scene_data["loop_video"],
+                )
+            else:
+                logging.warning(f"Video file not found: {full_video_path}")
 
-        if scene_data.get("audio_path") and os.path.exists(scene_data["audio_path"]):
-            create_or_update_audio_source(
-                scene_name=scene_data["scene_name"],
-                source_name=scene_data["audio_source_name"],
-                file_path=scene_data["audio_path"],
-            )
+        # Resolve audio path relative to media_root
+        audio_path = scene_data.get("audio_path")
+        if audio_path:
+            full_audio_path = os.path.join(media_root, audio_path)
+            if os.path.exists(full_audio_path):
+                create_or_update_audio_source(
+                    scene_name=scene_data["scene_name"],
+                    source_name=scene_data["audio_source_name"],
+                    file_path=full_audio_path,
+                )
+            else:
+                logging.warning(f"Audio file not found: {full_audio_path}")
 
+    # Resolve background music path relative to media_root
     if bg_music_config.get("enabled"):
         bg_music_path = bg_music_config.get("file_path")
-        if bg_music_path and os.path.exists(bg_music_path):
-            logging.info(f"Setting up background music with: {bg_music_path}")
-            start_background_music(
-                music_file_path=bg_music_path,
-                has_initial_audio=False,
-                normal_volume=bg_music_config.get("volume_normal", 0.3),
-                ducked_volume=bg_music_config.get("volume_ducked", 0.1),
-            )
-        else:
-            logging.warning(
-                f"Background music is enabled, but file not found: {bg_music_path}"
-            )
+        if bg_music_path:
+            full_bg_music_path = os.path.join(media_root, bg_music_path)
+            if os.path.exists(full_bg_music_path):
+                logging.info(f"Setting up background music with: {full_bg_music_path}")
+                init_background_music(music_file_path=full_bg_music_path)
+            else:
+                logging.warning(
+                    f"Background music is enabled, but file not found: {full_bg_music_path}"
+                )
 
     logging.info("✓ OBS auto‑setup finished")
 

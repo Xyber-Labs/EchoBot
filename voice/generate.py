@@ -2,9 +2,9 @@ import datetime
 import os
 
 from elevenlabs.client import ElevenLabs
-from config.config import ElevenLabsSettings
+
 from app_logging.logger import logger
-from config.config import settings
+from config.config import ElevenLabsSettings, settings
 
 
 def generate_voice(

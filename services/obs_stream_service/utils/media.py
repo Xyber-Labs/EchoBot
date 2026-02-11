@@ -1,7 +1,9 @@
 from __future__ import annotations
+
 import os
-from config.config import MediaSettings
+
 from app_logging.logger import logger
+from config.config import MediaSettings
 
 
 def get_latest_audio_file(topic: str, media_settings: MediaSettings) -> str | None:

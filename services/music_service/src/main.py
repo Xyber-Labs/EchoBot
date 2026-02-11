@@ -1,24 +1,18 @@
 #!/usr/bin/env python
 import asyncio
-import sys
-import schedule
-import time
 import signal
+import sys
+import time
 
+import schedule
 
+from app_logging.logger import logger
 # Removed unused typing imports
 from config.config import Settings
-from app_logging.logger import logger
+from LLM import initialize_llm, load_agent_personality, load_json
+from services.music_service.media.media_service import initialize_media_once
 from services.music_service.music_agent.music_graph import MusicGeneration
 from services.music_service.music_agent.state import MusicGenerationState
-from services.music_service.media.media_service import initialize_media_once
-
-from LLM import (
-    load_agent_personality,
-    load_json,
-    initialize_llm,
-)
-
 
 # Load the configuration
 logger.info("Loading configuration...")

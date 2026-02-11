@@ -15,9 +15,6 @@ state/*
 
 ffmpeg_stream/video
 
-#Xyber Radio
-xyber-radio/
-
 # Environment variables
 config/.env
 .env

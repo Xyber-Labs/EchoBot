@@ -1,122 +1,44 @@
 {
   "background_music": {
     "enabled": true,
-    "file_path": "music/soundcloud_songs/Agent - Song Name.mp3",
+    "file_path": "music/NeverGona.mp3",
     "loop": true,
     "volume_normal": 0.3,
     "volume_ducked": 0.1
   },
   "current_scene": {
     "scene_name": "Scene-Music",
-    "video_path": "videos/dj.mov",
+    "video_path": "videos/NeverGona.mp4",
     "has_audio": false
   },
   "_available_scenes": {
-    "_comment": "Copy any of these to 'current_scene' above to switch scenes instantly:",
-    "_logic": "has_audio: true = background music ducks to 10% | has_audio: false = background music stays at 30%",
-    "greeting": {
-      "scene_name": "Scene-Greeting",
-      "video_path": "videos/greeting.mov",
-      "video_source_name": "GreetingVideo",
-      "has_audio": false,
-      "loop_video": true
-    },
-    "agent_radio_banner_1": {
-      "scene_name": "Scene-Agent-Radio-Banner-1",
-      "video_path": "videos/agent_radio_banner_1.mov",
-      "video_source_name": "AgentRadioBanner1Video",
-      "has_audio": false,
-      "loop_video": false
-    },
-    "agent_radio_banner_2": {
-      "scene_name": "Scene-Agent-Radio-Banner-2",
-      "video_path": "videos/agent_radio_banner_2.mov",
-      "video_source_name": "AgentRadioBanner2Video",
-      "has_audio": false,
-      "loop_video": false
-    },
-    "agent_radio_banner_3": {
-      "scene_name": "Scene-Agent-Radio-Banner-3",
-      "video_path": "videos/agent_radio_banner_3.mov",
-      "video_source_name": "AgentRadioBanner3Video",
-      "has_audio": false,
-      "loop_video": false
-    },
-    "ama_spoiler": {
-      "scene_name": "Scene-AMA-Spoiler",
-      "video_path": "videos/ama_spoiler.mov",
-      "video_source_name": "AMASpoilerVideo",
-      "has_audio": false,
-      "loop_video": false
-    },
-    "talking": {
-      "scene_name": "Scene-Talking",
-      "video_path": "videos/talking.mov",
-      "video_source_name": "TalkingVideo",
-      "audio_path": "voice/generated_audio/audio_20250807_112346.mp3",
-      "audio_source_name": "TalkingAudio",
-      "has_audio": true,
-      "loop_video": false
-    },
-    "music_spoiler": {
-      "scene_name": "Scene-Music-Spoiler",
-      "video_path": "videos/music_spoiler.mov",
-      "video_source_name": "MusicSpoilerVideo",
-      "has_audio": false,
-      "loop_video": false
-    },
-    "dj_visual_only": {
+    "music": {
       "scene_name": "Scene-Music",
-      "video_path": "videos/dj.mov",
-      "video_source_name": "DJVideo",
+      "video_path": "videos/NeverGona.mp4",
+      "video_source_name": "MusicVideo",
       "has_audio": false,
       "loop_video": true
     },
-    "ai_robotics_news": {
-      "scene_name": "Scene-News",
-      "video_path": "videos/talking.mov",
-      "video_source_name": "NewsVideo",
-      "audio_path": "voice/generated_audio/audio_ai_robotics_20250929_103119.mp3",
-      "audio_source_name": "NewsAudio",
-      "has_audio": true,
-      "loop_video": false
-    },
-    "news_spoiler": {
-      "scene_name": "Scene-News-Spoiler",
-      "video_path": "videos/news_spoiler.mov",
-      "video_source_name": "NewsSpoilerVideo",
+    "transition_music": {
+      "scene_name": "Scene-Transition-Music",
+      "video_path": "videos/transition_music.mp4",
+      "video_source_name": "TransitionMusicVideo",
       "has_audio": false,
       "loop_video": false
-    },
-    "web3_news": {
-      "scene_name": "Scene-News",
-      "video_path": "videos/talking.mov",
-      "video_source_name": "NewsVideo",
-      "audio_path": "voice/generated_audio/audio_web3_20250929_102920.mp3",
-      "audio_source_name": "NewsAudio",
-      "has_audio": true,
-      "loop_video": false
-    },
-    "typing": {
-      "scene_name": "Scene-Typing",
-      "video_path": "videos/typing_01.mp4",
-      "video_source_name": "TypingVideo",
-      "has_audio": false,
-      "loop_video": true
-    },
-    "typing_2": {
-      "scene_name": "Scene-Typing-2",
-      "video_path": "videos/typing_02.mp4",
-      "video_source_name": "TypingVideo-2",
-      "has_audio": false,
-      "loop_video": true
     },
     "working": {
       "scene_name": "Scene-Working",
-      "video_path": "videos/reading-01.mp4",
+      "video_path": "videos/working.mp4",
       "video_source_name": "WorkingVideo",
       "has_audio": false,
       "loop_video": true
+    },
+    "transition_working": {
+      "scene_name": "Scene-Transition-Working",
+      "video_path": "videos/transition_working.mp4",
+      "video_source_name": "TransitionWorkingVideo",
+      "has_audio": false,
+      "loop_video": false
     }
   }
 }

@@ -3,10 +3,12 @@ This script is used to manually refresh the SoundCloud access token using the re
 It reads the current refresh token from the configuration and updates both access and refresh tokens.
 """
 
-import requests
 import json
-from config.config import Settings
+
+import requests
+
 from app_logging.logger import logger
+from config.config import Settings
 
 settings = Settings()
 

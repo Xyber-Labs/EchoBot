@@ -1,189 +1,24 @@
 {
     "variables": {
-        "dj_duration": 300
+        "music_duration": 30,
+        "working_duration": 20
     },
     "playlist": [
         {
-            "scene_name": "agent_radio_banner_1",
+            "scene_name": "transition_music",
             "duration": 3
         },
         {
-            "scene_name": "music_spoiler",
-            "duration": 3
+            "scene_name": "music",
+            "duration": "$music_duration"
         },
         {
-            "scene_name": "dj_visual_only",
-            "duration": "$dj_duration",
-            "location_config": {
-                "location_switch_duration": 300,
-                "locations": [
-                    {
-                        "scene": "Scene-Music-Location1",
-                        "sources": [
-                            "dj_01",
-                            "dj_02",
-                            "dj_03",
-                            "dj_04",
-                            "dj_05",
-                            "dj_06",
-                            "dj_07"
-                        ]
-                    },
-                    {
-                        "scene": "Scene-Music-Location2",
-                        "sources": [
-                            "dj_08",
-                            "dj_09",
-                            "dj_10",
-                            "dj_11",
-                            "dj_12"
-                        ]
-                    },
-                    {
-                        "scene": "Scene-Music-Location3",
-                        "sources": [
-                            "dj_13",
-                            "dj_14",
-                            "dj_15",
-                            "dj_16",
-                            "dj_17"
-                        ]
-                    },
-                    {
-                        "scene": "Scene-Music-Location4",
-                        "sources": [
-                            "dj_18",
-                            "dj_19",
-                            "dj_20",
-                            "dj_21",
-                            "dj_22"
-                        ]
-                    },
-                    {
-                        "scene": "Scene-Music-Location5",
-                        "sources": [
-                            "dj_23",
-                            "dj_24",
-                            "dj_25",
-                            "dj_26"
-                        ]
-                    }
-                ]
-            },
-            "media_source_cycle": {
-                "duration": 10.0
-            }
-        },
-        {
-            "scene_name": "agent_radio_banner_2",
-            "duration": 3
-        },
-        {
-            "scene_name": "news_spoiler",
-            "duration": 3
-        },
-        {
-            "scene_name": "ai_robotics_news",
-            "duration": null
-        },
-        {
-            "scene_name": "ama_spoiler",
+            "scene_name": "transition_working",
             "duration": 3
         },
         {
             "scene_name": "working",
-            "duration": 100
-        },
-        {
-            "scene_name": "music_spoiler",
-            "duration": 3
-        },
-        {
-            "scene_name": "dj_visual_only",
-            "duration": "$dj_duration",
-            "location_config": {
-                "location_switch_duration": 300,
-                "locations": [
-                    {
-                        "scene": "Scene-Music-Location1",
-                        "sources": [
-                            "dj_01",
-                            "dj_02",
-                            "dj_03",
-                            "dj_04",
-                            "dj_05",
-                            "dj_06",
-                            "dj_07"
-                        ]
-                    },
-                    {
-                        "scene": "Scene-Music-Location2",
-                        "sources": [
-                            "dj_08",
-                            "dj_09",
-                            "dj_10",
-                            "dj_11",
-                            "dj_12"
-                        ]
-                    },
-                    {
-                        "scene": "Scene-Music-Location3",
-                        "sources": [
-                            "dj_13",
-                            "dj_14",
-                            "dj_15",
-                            "dj_16",
-                            "dj_17"
-                        ]
-                    },
-                    {
-                        "scene": "Scene-Music-Location4",
-                        "sources": [
-                            "dj_18",
-                            "dj_19",
-                            "dj_20",
-                            "dj_21",
-                            "dj_22"
-                        ]
-                    },
-                    {
-                        "scene": "Scene-Music-Location5",
-                        "sources": [
-                            "dj_23",
-                            "dj_24",
-                            "dj_25",
-                            "dj_26"
-                        ]
-                    }
-                ]
-            },
-            "media_source_cycle": {
-                "duration": 10.0
-            }
-        },
-        {
-            "scene_name": "agent_radio_banner_3",
-            "duration": 3
-        },
-        {
-            "scene_name": "news_spoiler",
-            "duration": 3
-        },
-        {
-            "scene_name": "web3_news",
-            "duration": null
-        },
-        {
-            "scene_name": "ama_spoiler",
-            "duration": 3
-        },
-        {
-            "scene_name": "working",
-            "duration": 100
-        },
-        {
-            "scene_name": "typing",
-            "duration": 60
+            "duration": "$working_duration"
         }
     ]
 }

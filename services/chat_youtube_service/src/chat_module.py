@@ -1,29 +1,26 @@
 from __future__ import annotations
 
+import asyncio
 import datetime
 import json
 import random
 import re
+import signal
+import sys
 import time
 from concurrent.futures import Future, ThreadPoolExecutor
 from pathlib import Path
+from typing import Any, Optional
 
-import asyncio
-import signal
-import sys
-from typing import Optional, Any
-
-from config.config import Settings
 from app_logging.logger import logger
+from config.config import Settings
+from LLM import load_agent_personality, load_json
 from LLM.llm_utils import initialize_llm
-from voice.generate import generate_voice
-from services.chat_youtube_service.src.agent.graph import Youtube_Responder_Agent
+from services.chat_youtube_service.src.agent.graph import \
+    Youtube_Responder_Agent
 from services.chat_youtube_service.src.youtube.exceptions import (
-    YoutubeClientError,
-    YoutubeVideoNotFoundError,
-    YoutubeLiveChatNotFoundError,
-)
-from services.chat_youtube_service.src.youtube.module import YoutubeClientClass
+    YoutubeClientError, YoutubeLiveChatNotFoundError,
+    YoutubeVideoNotFoundError)
 from services.chat_youtube_service.src.youtube.models import (
     LiveChatMessage,
 )
@@ -33,6 +30,9 @@ from LLM import (
     load_agent_personality,
     load_json,
 )
+    LiveChatMessage, LiveChatMessageListResponse)
+from services.chat_youtube_service.src.youtube.module import YoutubeClientClass
+from voice.generate import generate_voice
 
 
 class ChatService:
@@ -142,7 +142,7 @@ class ChatService:
                     for hist_msg in answered_messages
                     if hist_msg.get("author") == msg.authorDetails.displayName
                 ][-5:]  # Last 5 messages from this user
-                
+
                 response = await self.youtube_responder_agent.graph.ainvoke(
                     {
                         "message": msg.snippet.displayMessage,
@@ -157,37 +157,51 @@ class ChatService:
                     author_name = msg.authorDetails.displayName
                     logger.debug(f"Original LLM reply: {answer_text}")
                     logger.debug(f"Author name: {author_name}")
-                    
+
                     # CRITICAL: Remove ALL @ symbols and @mentions from the LLM's reply
                     # The system will add @{author} automatically, so any @ in the reply causes double @@
-                    
+
                     # First, remove any @mentions that match the author's name (most common case)
                     # Pattern: @ or @@ followed by author name, optionally followed by comma/space
-                    answer_text = re.sub(rf'@+{re.escape(author_name)}[,\s]*', '', answer_text, flags=re.IGNORECASE)
-                    
+                    answer_text = re.sub(
+                        rf"@+{re.escape(author_name)}[,\s]*",
+                        "",
+                        answer_text,
+                        flags=re.IGNORECASE,
+                    )
+
                     # Remove ALL other @mentions (any @ followed by word characters)
-                    answer_text = re.sub(r'@+[\w_]+[,\s]*', '', answer_text)
-                    
+                    answer_text = re.sub(r"@+[\w_]+[,\s]*", "", answer_text)
+
                     # Remove any remaining standalone @ symbols
                     answer_text = answer_text.replace("@", "").strip()
-                    
+
                     # Additional safeguard: if reply starts with author's name (without @), remove it
                     # This prevents "@Author, Author, message" pattern
                     if answer_text.lower().startswith(author_name.lower()):
-                        answer_text = re.sub(rf'^{re.escape(author_name)}[,\s]*', '', answer_text, flags=re.IGNORECASE).strip()
-                    
+                        answer_text = re.sub(
+                            rf"^{re.escape(author_name)}[,\s]*",
+                            "",
+                            answer_text,
+                            flags=re.IGNORECASE,
+                        ).strip()
+
                     # Clean up formatting: remove extra spaces, commas, etc.
-                    answer_text = re.sub(r'\s+', ' ', answer_text).strip()
-                    answer_text = re.sub(r',\s*,', ',', answer_text)  # Remove double commas
-                    answer_text = answer_text.strip(',').strip()  # Remove leading/trailing commas
-                    
+                    answer_text = re.sub(r"\s+", " ", answer_text).strip()
+                    answer_text = re.sub(
+                        r",\s*,", ",", answer_text
+                    )  # Remove double commas
+                    answer_text = answer_text.strip(
+                        ","
+                    ).strip()  # Remove leading/trailing commas
+
                     logger.debug(f"Cleaned LLM reply: {answer_text}")
-                    
+
                     # Now add the @mention at the start
                     # Ensure author_name doesn't already have an @ prefix
                     clean_author_name = author_name.lstrip("@")
                     formatted_answer = f"@{clean_author_name}, {answer_text}"
-                    
+
                     logger.info(f"Final formatted answer: {formatted_answer}")
 
                     if is_voice:

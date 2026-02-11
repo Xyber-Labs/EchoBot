@@ -1,17 +1,18 @@
 from __future__ import annotations
+
+import datetime
 import time
 from typing import Any
+
 from langchain_core.output_parsers import JsonOutputParser
 from langgraph.graph import END, START, StateGraph
-from services.chat_youtube_service.src.agent.state import YoutubeState
-from services.chat_youtube_service.src.agent.prompts import (
-    SCAM_PROMPT,
-    ATTACK_PROMPT,
-    REPLY_PROMPT,
-)
-from LLM import clean_response
+
 from app_logging.logger import logger
-import datetime
+from LLM import clean_response
+from services.chat_youtube_service.src.agent.prompts import (ATTACK_PROMPT,
+                                                             REPLY_PROMPT,
+                                                             SCAM_PROMPT)
+from services.chat_youtube_service.src.agent.state import YoutubeState
 
 
 class Youtube_Responder_Agent:
@@ -27,7 +28,6 @@ class Youtube_Responder_Agent:
         settings,
         chat_rules,
     ) -> None:
-
         self.llm = llm
         self.llm_thinking = llm_thinking
         self.llm_validation = llm_validation
@@ -123,7 +123,6 @@ class Youtube_Responder_Agent:
         return "create_reply"
 
     async def input_scam_validation(self, state: YoutubeState) -> YoutubeState:
-
         # Check if the message is a scam
         user_message = self._extract_message_text(state["message"])
         scam_promt_formated = SCAM_PROMPT.format(user_message=user_message)
@@ -176,7 +175,7 @@ class Youtube_Responder_Agent:
         user_recent_messages = state.get("user_recent_messages", [])
         author = state.get("author", "User")
         user_message = self._extract_message_text(state["message"])
-        
+
         logger.info(f"Chat history: {chat_history}")
         logger.info(f"User recent messages: {user_recent_messages}")
 
@@ -185,23 +184,26 @@ class Youtube_Responder_Agent:
         # Format chat history for better readability
         formatted_chat_history = ""
         if chat_history:
-            formatted_chat_history = "\n".join([
-                f"  - {msg.get('author', 'Unknown')}: {msg.get('message', '')} → Agent: {msg.get('agent_reply_text', '')}"
-                for msg in chat_history[-10:]  # Last 10 exchanges
-            ])
+            formatted_chat_history = "\n".join(
+                [
+                    f"  - {msg.get('author', 'Unknown')}: {msg.get('message', '')} → Agent: {msg.get('agent_reply_text', '')}"
+                    for msg in chat_history[-10:]  # Last 10 exchanges
+                ]
+            )
         else:
             formatted_chat_history = "  (No previous conversation history)"
 
         # Format user's recent messages for context
         formatted_user_history = ""
         if user_recent_messages:
-            formatted_user_history = "\n".join([
-                f"  - {msg.get('message', '')}"
-                for msg in user_recent_messages
-            ])
+            formatted_user_history = "\n".join(
+                [f"  - {msg.get('message', '')}" for msg in user_recent_messages]
+            )
             logger.info(f"Formatted user history: {formatted_user_history}")
         else:
-            formatted_user_history = "  (This is the user's first message in this conversation)"
+            formatted_user_history = (
+                "  (This is the user's first message in this conversation)"
+            )
             logger.info(f"Formatted user history: {formatted_user_history}")
 
         reply_prompt = REPLY_PROMPT.format(

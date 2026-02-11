@@ -1,8 +1,10 @@
 from __future__ import annotations
+
 import sys
 
-from google_auth_oauthlib.flow import InstalledAppFlow
 from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+
 from config.config import YouTubeSettings
 
 # This is the scope required by the application to manage your YouTube account.
@@ -44,8 +46,8 @@ def get_refresh_token(settings: YouTubeSettings) -> str:
         # Using fixed port 8080 - make sure this is in your OAuth client's authorized redirect URIs
         creds: Credentials = flow.run_local_server(
             port=8080,
-            prompt='select_account',  # Force account selection screen
-            login_hint='your-email@example.com'  # Hint for the correct account
+            prompt="select_account",  # Force account selection screen
+            login_hint="your-email@example.com",  # Hint for the correct account
         )
 
         if creds.refresh_token:

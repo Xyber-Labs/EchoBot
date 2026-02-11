@@ -6,20 +6,15 @@ import re
 from pathlib import Path
 from typing import Any
 
+import yaml
+
 from app_logging.logger import logger
 from config.config import Settings
-from LLM.llm_utils import generate_llm_response_async, clean_for_voice
 from LLM import load_agent_personality, load_json
-    AMA_reply_prompt,
-)
-
+from LLM.llm_utils import clean_for_voice, generate_llm_response_async
+from services.obs_stream_service.core.ama_promts import AMA_reply_prompt
 from voice.generate import generate_voice
-from config.config import Settings
-import yaml
-from LLM.llm_init import initialize_llms
-import sys
 
-settings = Settings()
 settings = Settings()
 
 
@@ -69,7 +64,7 @@ async def generate_ama_voice(
             settings.agent.agent_personality_path
         )
         agent_knowledge = load_json(settings.agent.agent_knowledge_path)
-   
+
         formatted_prompt = AMA_reply_prompt.format(
             agent_personality=agent_personality,
             agent_knowledge=agent_knowledge,
@@ -129,7 +124,6 @@ if __name__ == "__main__":
             "author": "TestUser",
             "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         },
-        
     ]
 
     filename = asyncio.run(generate_ama_voice(settings, answered_messages))

@@ -1,16 +1,16 @@
 from __future__ import annotations
 
+import random
+import time
 from collections.abc import Iterable
 from enum import Enum, auto
-import random
 from threading import Event, Thread
-import time
 from time import sleep
 from typing import Any
 
-from services.obs_stream_service.services.obs_service import OBSService
 from app_logging.logger import logger
 from config.config import settings
+from services.obs_stream_service.services.obs_service import OBSService
 
 
 class CycleMode(Enum):
@@ -109,7 +109,7 @@ class SubsceneCycler:
         Two-level cycling:
         - Outer: Switch locations every location_switch_duration
         - Inner: Switch videos within location every media_source_cycle_duration
-        
+
         Args:
             locations: List of location dicts with 'scene' and 'sources' keys
             total_duration: Total time to run (e.g., 1800s = 30 minutes)
@@ -266,7 +266,7 @@ class SubsceneCycler:
         5. Repeat until total_duration elapsed
         """
         assert self._obs is not None
-        
+
         locations = self._cfg["locations"]
         total_duration = self._cfg["total_duration"]
         location_switch_duration = self._cfg["location_switch_duration"]
@@ -287,15 +287,15 @@ class SubsceneCycler:
         ) -> None:
             """Run media source cycler in a separate thread for current location"""
             nonlocal _media_source_cycler_stop
-            
+
             _media_source_cycler_stop.clear()
             last_source = None
-            
+
             while not _media_source_cycler_stop.is_set():
                 n = len(sources)
                 if n == 0:
                     break
-                
+
                 if n > 1:
                     # Exclude the last source from the choices, then pick a random one
                     possible_sources = [s for s in sources if s != last_source]
@@ -314,20 +314,28 @@ class SubsceneCycler:
                 try:
                     self._obs.switch_on_media_source(scene_name, current_source)
                 except Exception as e:
-                    logger.warning(f"Failed to show source '{current_source}' in '{scene_name}': {e}")
+                    logger.warning(
+                        f"Failed to show source '{current_source}' in '{scene_name}': {e}"
+                    )
                     continue  # Skip to next iteration if source doesn't exist
 
                 # Turn off all other sources (ignore errors if source doesn't exist)
                 for source in sources:
                     if source != current_source:
                         try:
-                            result = self._obs.switch_off_media_source(scene_name, source)
+                            result = self._obs.switch_off_media_source(
+                                scene_name, source
+                            )
                             if not result:
                                 # Source doesn't exist or failed to hide, that's okay
-                                logger.debug(f"Source '{source}' not found or failed to hide in '{scene_name}', skipping")
+                                logger.debug(
+                                    f"Source '{source}' not found or failed to hide in '{scene_name}', skipping"
+                                )
                         except Exception as e:
                             # Source might not exist in this scene, that's okay
-                            logger.debug(f"Source '{source}' not found in '{scene_name}', skipping: {e}")
+                            logger.debug(
+                                f"Source '{source}' not found in '{scene_name}', skipping: {e}"
+                            )
 
                 # Sleep for media_source_cycle_duration (interruptible)
                 slept = 0.0
@@ -366,9 +374,7 @@ class SubsceneCycler:
                 )
 
                 # Pick random location (exclude last)
-                available_locations = [
-                    loc for loc in locations if loc != last_location
-                ]
+                available_locations = [loc for loc in locations if loc != last_location]
                 if not available_locations:
                     available_locations = locations
 
@@ -390,7 +396,9 @@ class SubsceneCycler:
                 try:
                     self._obs.switch_scene_smooth(scene_name)
                 except Exception as e:
-                    logger.error(f"Failed to switch to location scene '{scene_name}': {e}")
+                    logger.error(
+                        f"Failed to switch to location scene '{scene_name}': {e}"
+                    )
                     # Skip to next location
                     continue
 
@@ -405,14 +413,12 @@ class SubsceneCycler:
                     )
                     _media_source_cycler_thread.start()
                 else:
-                    logger.warning(
-                        f"No sources configured for location '{scene_name}'"
-                    )
+                    logger.warning(f"No sources configured for location '{scene_name}'")
 
                 # Wait for location switch duration (or until stop)
                 # Start timing immediately after scene switch completes
                 location_start_time = time.time()
-                
+
                 # Use precise timing with small sleep intervals for responsive checking
                 while not self._stop.is_set():
                     elapsed_at_location = time.time() - location_start_time

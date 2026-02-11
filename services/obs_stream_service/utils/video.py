@@ -5,7 +5,6 @@ Provides accurate video duration detection and other video helpers.
 """
 
 import json
-
 import os
 
 from app_logging.logger import logger

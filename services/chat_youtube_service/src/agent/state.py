@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, TypedDict, List
+from typing import Any, Dict, List, Optional, TypedDict
 
 
 class YoutubeState(TypedDict):

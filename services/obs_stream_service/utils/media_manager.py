@@ -6,11 +6,10 @@ based on configuration settings.
 """
 
 import os
+from typing import Dict, List, Tuple
 
-from typing import List, Dict, Tuple
-
-from config.config import settings
 from app_logging.logger import logger
+from config.config import settings
 
 
 class MediaDirectoryManager:

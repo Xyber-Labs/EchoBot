@@ -1,24 +1,18 @@
+import time
 from datetime import datetime, timedelta
 from functools import lru_cache
 from typing import Any, Literal
-import time
 
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-from config.config import Settings
 from app_logging.logger import logger
-from services.chat_youtube_service.src.youtube.models import (
-    LiveChatMessage,
-    LiveChatMessageListResponse,
-    Video,
-)
+from config.config import Settings
 from services.chat_youtube_service.src.youtube.exceptions import (
-    YoutubeVideoNotFoundError,
-    YoutubeLiveChatNotFoundError,
-    YoutubeAPIError,
-)
+    YoutubeAPIError, YoutubeLiveChatNotFoundError, YoutubeVideoNotFoundError)
+from services.chat_youtube_service.src.youtube.models import (
+    LiveChatMessage, LiveChatMessageListResponse, Video)
 
 settings = Settings()
 
@@ -224,7 +218,6 @@ class YoutubeClientClass:
     def post_chat_message(self, live_chat_id: str, message_text: str) -> None:
         """Post a message to the live chat"""
         try:
-
             message_body = {
                 "snippet": {
                     "liveChatId": live_chat_id,

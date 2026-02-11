@@ -1,4 +1,5 @@
-from services.obs_stream_service.services.schedule_service import ScheduleService
+from services.obs_stream_service.services.schedule_service import \
+    ScheduleService
 
 
 def update_scene_audio_path_in_schedule(scene_name: str, audio_path: str):

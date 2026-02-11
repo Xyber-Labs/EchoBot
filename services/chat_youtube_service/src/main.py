@@ -11,11 +11,9 @@ from fastapi import FastAPI
 
 from app_logging.logger import logger
 from config.config import Settings
-from services.chat_youtube_service.src.chat_module import (
-    ChatService,
-    create_chat_service,
-)
 from services.chat_youtube_service.src.api import router as api_router
+from services.chat_youtube_service.src.chat_module import (ChatService,
+                                                           create_chat_service)
 
 
 @asynccontextmanager

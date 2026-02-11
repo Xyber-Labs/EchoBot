@@ -11,6 +11,7 @@ Usage:
 import argparse
 import sys
 from pathlib import Path
+
 from app_logging.logger import logger
 
 # Add the project root to the Python path BEFORE any other imports
@@ -24,10 +25,9 @@ def _import_modules():
     """Import modules after path is set up."""
     global load_dotenv, generate_news_for_web3, generate_news_for_ai_robotics
     from dotenv import load_dotenv  # noqa: E402
-    from services.news_service.src.main import (
-        generate_news_for_web3,
-        generate_news_for_ai_robotics,
-    )  # noqa: E402
+
+    from services.news_service.src.main import (  # noqa: E402
+        generate_news_for_ai_robotics, generate_news_for_web3)
 
 
 # Initialize modules

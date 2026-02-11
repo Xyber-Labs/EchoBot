@@ -2,23 +2,23 @@
 
 from __future__ import annotations
 
-from concurrent.futures import ThreadPoolExecutor
 import time
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
-from config.config import OBSSettings, settings as global_settings
-from services.obs_stream_service.obs import (
-    obs_client_manager,  # TODO: not really should be imported here from there
-    run_audio_matched_video_segment,
-    set_scene_transition,
-    start_streaming,
-    stop_streaming,
-    switch_to_scene,
-    switch_to_scene_smooth,
-)
-from services.obs_stream_service.obs import hide_source_in_scene, show_source_in_scene
-from services.obs_stream_service.obs.ClientManager import OBSClientManager
 from app_logging.logger import logger
+from config.config import OBSSettings
+from config.config import settings as global_settings
+from services.obs_stream_service.obs import \
+    obs_client_manager  # TODO: not really should be imported here from there
+from services.obs_stream_service.obs import (hide_source_in_scene,
+                                             run_audio_matched_video_segment,
+                                             set_scene_transition,
+                                             show_source_in_scene,
+                                             start_streaming, stop_streaming,
+                                             switch_to_scene,
+                                             switch_to_scene_smooth)
+from services.obs_stream_service.obs.ClientManager import OBSClientManager
 
 
 class OBSService:
